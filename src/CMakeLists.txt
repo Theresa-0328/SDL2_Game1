@@ -1,0 +1,4 @@
+﻿cmake_minimum_required (VERSION 3.26)
+project ("SDL2_Game1")
+
+add_executable (SDL2_Game1 "main.cpp" "Application.cpp")
