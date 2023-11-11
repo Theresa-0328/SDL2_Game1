@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -8,7 +8,25 @@ class Scenes
 public:
 	Scenes(SDL_Renderer* render);
 	~Scenes();
+	SDL_Renderer* m_render;
+	void task();
+	void setKeyboard(bool left, bool right);
 private:
+	int renderW{};
+	int renderH{};
+	SDL_Texture* background;
+	int backgroundW{};
+	int backgroundH{};
+	SDL_Texture* graveyard;
+	int graveyardW{};
+	int graveyardH{};
+	SDL_Texture* mountains;
+	int mountainsW{};
+	int mountainsH{};
+	SDL_Texture* tileset_sliced;
+	int tileset_slicedW{};
+	int tileset_slicedH{};
 
-
+	int tigerHeadx{ -450 };
+	int tigerHeady{ -195 };
 };
