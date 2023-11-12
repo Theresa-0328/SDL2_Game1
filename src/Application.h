@@ -32,7 +32,7 @@ private:
 	uint32_t gFPS{ 60 };
 	uint32_t gFPS_TIME{ 1000 / gFPS };
 	SDL_Event event{};
-	Scenes* m_scenes;
+	std::unique_ptr<Scenes> m_scenes;
 	bool k_left{};
 	bool k_right{};
 };

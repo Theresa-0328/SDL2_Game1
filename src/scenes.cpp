@@ -21,23 +21,57 @@ Scenes::~Scenes()
 
 void Scenes::task()
 {
-	SDL_Rect sRect{ 0, 0, backgroundW, backgroundH };
-	SDL_Rect dRect{ tigerHeadx, tigerHeady, renderW * 1.7, renderH * 1.7 };
-	SDL_RenderCopy(m_render, background, &sRect, &dRect);
+	{
+		SDL_Rect sRect{ 0, 0, backgroundW, backgroundH };
+		SDL_Rect dRect{ backgroundx, backgroundy, renderW * 1.8, renderH * 1.8 };
+		SDL_RenderCopy(m_render, background, &sRect, &dRect);
+	}
 
-	SDL_Rect s1Rect{ 300, 50, 400, 500 }; // tigerhead img
-	SDL_Rect d1Rect{ -160, tigerHeady, 400, 500 };
-	//SDL_RenderCopy(m_render, graveyard, &s1Rect, &d1Rect);
+	for (int i = -10; i < 10; i++)
+	{
+		int mountainsX = 300 * i - mountains_move;
+		SDL_Rect sRect{ 0, 0, mountainsW, mountainsH };
+		SDL_Rect dRect{ mountainsX, 180, mountainsW * 3, mountainsH * 3 };
+		SDL_RenderCopy(m_render, mountains, &sRect, &dRect);
+	}
+
+	for (int i = -5; i < 5; i++)
+	{
+		int graveyardX = 1510 * i - graveyard_move;
+		SDL_Rect sRect{ 0, 0, graveyardW, graveyardH };
+		SDL_Rect dRect{ graveyardX, 250, graveyardW * 4, graveyardH * 4 };
+		SDL_RenderCopy(m_render, graveyard, &sRect, &dRect);
+	}
+
+	for (int i = -30; i < 30; i++)
+	{
+		int tileset_slicedY = 180 * i - tileset_sliced_move;
+		SDL_Rect sRect{ 64, 55, 64, 41 };
+		SDL_Rect dRect{ tileset_slicedY, tileset_slicedy, 64 * 3, 41 * 3 };
+		SDL_RenderCopy(m_render, tileset_sliced, &sRect, &dRect);
+	}
 }
 
 void Scenes::setKeyboard(bool left, bool right)
 {
 	if (left)
 	{
-		tigerHeadx += 5;
+		if (backgroundx < -10)
+		{
+			backgroundx += 1;
+		}
+		mountains_move += 2;
+		graveyard_move += 3;
+		tileset_sliced_move += 4;
 	}
 	if (right)
 	{
-		tigerHeadx -= 5;
+		if (backgroundx > -885)
+		{
+			backgroundx -= 1;
+		}
+		mountains_move -= 2;
+		graveyard_move -= 3;
+		tileset_sliced_move -= 4;
 	}
 }

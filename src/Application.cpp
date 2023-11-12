@@ -19,14 +19,12 @@ Application::Application()
 	}
 	m_screen = SDL_CreateWindow("SDL2_Game1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, gWINDOW_WEIGHT, gWINDOW_HEIGHT, NULL);
 	m_render = SDL_CreateRenderer(m_screen, -1, SDL_RENDERER_ACCELERATED);
-	m_scenes = new Scenes{ m_render };
-
+	m_scenes = std::make_unique<Scenes>(m_render);
 	SDL_GetRendererOutputSize(m_render, &renderW, &renderH);
 }
 
 Application::~Application()
 {
-	delete m_scenes;
 	SDL_DestroyRenderer(m_render);
 	SDL_DestroyWindow(m_screen);
 	SDL_Quit();
@@ -70,8 +68,8 @@ bool Application::ProcessMessage()
 		case SDLK_UP:   /* tigerHeady -= 1; */break;
 		case SDLK_DOWN:  /*tigerHeady += 1;*/ break;
 
-		case SDLK_a: /*tigerHeadx -= 1;*/ break;
-		case SDLK_d: /*tigerHeadx += 1;*/ break;
+		case SDLK_a: k_left = true; break;
+		case SDLK_d: k_right = true;  break;
 		case SDLK_w: /*tigerHeady -= 1;*/ break;
 		case SDLK_s: /*tigerHeady += 1;*/ break;
 		default:
@@ -88,8 +86,8 @@ bool Application::ProcessMessage()
 		case SDLK_UP:   /* tigerHeady -= 1; */break;
 		case SDLK_DOWN:  /*tigerHeady += 1;*/ break;
 
-		case SDLK_a: /*tigerHeadx -= 1;*/ break;
-		case SDLK_d: /*tigerHeadx += 1;*/ break;
+		case SDLK_a: k_left = false; break;
+		case SDLK_d: k_right = false; break;
 		case SDLK_w: /*tigerHeady -= 1;*/ break;
 		case SDLK_s: /*tigerHeady += 1;*/ break;
 		default:

@@ -27,6 +27,16 @@ private:
 	int tileset_slicedW{};
 	int tileset_slicedH{};
 
-	int tigerHeadx{ -450 };
-	int tigerHeady{ -195 };
+	int backgroundx{ -450 };
+	int backgroundy{ -230 };
+
+	int mountains_move{};
+
+	//int tileset_slicedx{ 600 };
+	int tileset_slicedy{ 600 };
+	int tileset_sliced_move{};
+
+	int graveyardx{ -610 };
+	int graveyardy{ 330 };
+	int graveyard_move{};
 };
