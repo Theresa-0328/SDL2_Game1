@@ -10,6 +10,7 @@
 #include <crtdbg.h>
 
 #include "Scenes.h"
+#include "Player.h"
 
 class Application
 {
@@ -33,6 +34,8 @@ private:
 	uint32_t gFPS_TIME{ 1000 / gFPS };
 	SDL_Event event{};
 	std::unique_ptr<Scenes> m_scenes;
+	std::unique_ptr<Player> m_player;
 	bool k_left{};
 	bool k_right{};
+	bool k_J{};
 };

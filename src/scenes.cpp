@@ -17,6 +17,9 @@ Scenes::Scenes(SDL_Renderer* render)
 Scenes::~Scenes()
 {
 	SDL_DestroyTexture(background);
+	SDL_DestroyTexture(graveyard);
+	SDL_DestroyTexture(mountains);
+	SDL_DestroyTexture(tileset_sliced);
 }
 
 void Scenes::task()

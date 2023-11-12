@@ -8,12 +8,13 @@ class Scenes
 public:
 	Scenes(SDL_Renderer* render);
 	~Scenes();
-	SDL_Renderer* m_render;
 	void task();
 	void setKeyboard(bool left, bool right);
 private:
+	SDL_Renderer* m_render;
 	int renderW{};
 	int renderH{};
+
 	SDL_Texture* background;
 	int backgroundW{};
 	int backgroundH{};
@@ -29,14 +30,13 @@ private:
 
 	int backgroundx{ -450 };
 	int backgroundy{ -230 };
-
 	int mountains_move{};
-
 	//int tileset_slicedx{ 600 };
 	int tileset_slicedy{ 600 };
 	int tileset_sliced_move{};
-
 	int graveyardx{ -610 };
 	int graveyardy{ 330 };
 	int graveyard_move{};
+
+	//SDL_HasIntersection
 };

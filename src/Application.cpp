@@ -19,8 +19,9 @@ Application::Application()
 	}
 	m_screen = SDL_CreateWindow("SDL2_Game1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, gWINDOW_WEIGHT, gWINDOW_HEIGHT, NULL);
 	m_render = SDL_CreateRenderer(m_screen, -1, SDL_RENDERER_ACCELERATED);
-	m_scenes = std::make_unique<Scenes>(m_render);
 	SDL_GetRendererOutputSize(m_render, &renderW, &renderH);
+	m_scenes = std::make_unique<Scenes>(m_render);
+	m_player = std::make_unique<Player>(m_render);
 }
 
 Application::~Application()
@@ -72,6 +73,7 @@ bool Application::ProcessMessage()
 		case SDLK_d: k_right = true;  break;
 		case SDLK_w: /*tigerHeady -= 1;*/ break;
 		case SDLK_s: /*tigerHeady += 1;*/ break;
+		case SDLK_j: k_J = true; break;
 		default:
 			break;
 		}
@@ -90,6 +92,7 @@ bool Application::ProcessMessage()
 		case SDLK_d: k_right = false; break;
 		case SDLK_w: /*tigerHeady -= 1;*/ break;
 		case SDLK_s: /*tigerHeady += 1;*/ break;
+		case SDLK_j: k_J = false; break;
 		default:
 			break;
 		}
@@ -108,6 +111,7 @@ void Application::init()
 void Application::update()
 {
 	m_scenes->setKeyboard(k_left, k_right);
+	m_player->setKeyboard(k_left, k_right, k_J);
 }
 
 void Application::render()
@@ -116,6 +120,7 @@ void Application::render()
 	SDL_RenderClear(m_render);
 
 	m_scenes->task();
+	m_player->task();
 
 	SDL_RenderPresent(m_render);
 }
