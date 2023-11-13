@@ -31,7 +31,7 @@ void Player::task()
 		if (human_index >= current.size())
 		{
 			human_index = 0;
-			current = idle2;
+			//current = idle2;
 		}
 	}
 }

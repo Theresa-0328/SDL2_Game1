@@ -113,6 +113,7 @@ void Application::update()
 {
 	m_scenes->setKeyboard(k_left, k_right);
 	m_player->setKeyboard(k_left, k_right, k_J);
+	m_boss->getInfo();
 }
 
 void Application::render()

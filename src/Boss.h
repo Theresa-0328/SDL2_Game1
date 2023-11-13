@@ -25,14 +25,49 @@ private:
 	int currentTime = SDL_GetTicks();
 	int human_spriteChangeTime = human_currentTime + human_maxDuration;
 
-	std::unique_ptr<SDL_Texture, decltype(&TextureDeleter)> Idle_img;
+	std::shared_ptr<SDL_Texture> Idle_img;
+	std::vector<std::pair<int, int>> idle{ {0, 0}, {0, 1}, {0, 2}, {0, 3},{0, 4},{0, 5},{0, 6},{0, 7},{0, 8} };
 	int IdleW{};
 	int IdleH{};
-	std::vector<std::pair<int, int>> idle{ {0, 0}, {0, 1}, {0, 2}, {0, 3},{0, 4},{0, 5},{0, 6},{0, 7},{0, 8} };
-	std::unique_ptr<SDL_Texture, decltype(&TextureDeleter)> Attack_img;
+
+	std::shared_ptr<SDL_Texture> Attack_img;
 	std::vector<std::pair<int, int>> Attack{ {0, 0}, {0, 1}, {0, 2}, {0, 3},{0, 4},{0, 5},{0, 6},{0, 7},{0, 8},{0, 9}, {0, 10}, {0, 11}, {0, 12},{0, 13},{0, 14},{0, 15} };
 	int AttackW{};
 	int AttackH{};
 
-	std::vector<std::pair<int, int>> current = Attack;
+	std::shared_ptr<SDL_Texture> Death_img;
+	std::vector<std::pair<int, int>> Death{ {0, 0}, {0, 1}, {0, 2}, {0, 3},{0, 4},{0, 5},{0, 6},{0, 7} };
+	int DeathW{};
+	int DeathH{};
+
+	std::shared_ptr<SDL_Texture> Walk_img;
+	std::vector<std::pair<int, int>> Walk{ {0, 0}, {0, 1}, {0, 2}, {0, 3},{0, 4},{0, 5},{0, 6},{0, 7},{0, 8} };
+	int WalkW{};
+	int WalkH{};
+
+	std::shared_ptr<SDL_Texture> Get_Hit_img;
+	std::vector<std::pair<int, int>> Get_Hit{ {0, 0}, {0, 1}, {0, 2}, {0, 3},{0, 4},{0, 5},{0, 6},{0, 7},{0, 8} };
+	int Get_HitW{};
+	int Get_HitH{};
+
+	std::vector<std::pair<int, int>> current = idle;
+	std::shared_ptr<SDL_Texture> cur_ptr = Idle_img;
+
+	enum BossState
+	{
+		_FireBall,
+		_FirePillar,
+		_Dash,
+		_Idle,
+		_BeHit,
+		_Death,
+	};
+
+	int a = 0;
+	void UpdateBossState(BossState state);
+	void FireBallSkill();
+	void IdleProccess();
+	void DeathProccess();
+	void DashSkill();
+	void BeHitProccess();
 };
