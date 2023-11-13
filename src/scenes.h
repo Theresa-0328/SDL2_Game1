@@ -3,19 +3,21 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
+#include "Deleter.hpp"
 class Scenes
 {
 public:
 	Scenes(SDL_Renderer* render);
 	~Scenes();
 	void task();
+	void task_tileset_sliced();
 	void setKeyboard(bool left, bool right);
 private:
 	SDL_Renderer* m_render;
 	int renderW{};
 	int renderH{};
 
-	SDL_Texture* background;
+	std::unique_ptr<SDL_Texture, decltype(&TextureDeleter)> background;
 	int backgroundW{};
 	int backgroundH{};
 	SDL_Texture* graveyard;

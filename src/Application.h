@@ -11,6 +11,7 @@
 
 #include "Scenes.h"
 #include "Player.h"
+#include "Boss.h"
 
 class Application
 {
@@ -35,6 +36,7 @@ private:
 	SDL_Event event{};
 	std::unique_ptr<Scenes> m_scenes;
 	std::unique_ptr<Player> m_player;
+	std::unique_ptr<Boss> m_boss;
 	bool k_left{};
 	bool k_right{};
 	bool k_J{};

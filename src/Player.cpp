@@ -14,6 +14,11 @@ Player::~Player()
 
 void Player::task()
 {
+	if (human_index >= current.size())
+	{
+		human_index = 0;
+	}
+
 	SDL_Rect sRect = { current[human_index].second * widthSpr, current[human_index].first * heightSpr, widthSpr, heightSpr };
 	SDL_Rect dRect = { player2_x, player2_y, imgW, imgH };
 	SDL_RenderCopyEx(m_render, player2, &sRect, &dRect, 0, nullptr, human_flip);
@@ -23,7 +28,7 @@ void Player::task()
 	{
 		human_spriteChangeTime += human_maxDuration;
 		human_index++;
-		if ((human_index % current.size()) == 0)
+		if (human_index >= current.size())
 		{
 			human_index = 0;
 			current = idle2;
@@ -46,5 +51,9 @@ void Player::setKeyboard(bool left, bool right, bool J)
 	if (J)
 	{
 		current = attack1;
+	}
+	if (!left && !right && !J)
+	{
+		current = idle2;
 	}
 }

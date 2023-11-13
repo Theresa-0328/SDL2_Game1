@@ -2,13 +2,14 @@
 
 Scenes::Scenes(SDL_Renderer* render)
 	:m_render(render),
-	background(IMG_LoadTexture(m_render, "assets/scenes/background.png")),
+	background(IMG_LoadTexture(m_render, "assets/scenes/background.png"), TextureDeleter),
 	graveyard(IMG_LoadTexture(m_render, "assets/scenes/graveyard.png")),
 	mountains(IMG_LoadTexture(m_render, "assets/scenes/mountains.png")),
 	tileset_sliced(IMG_LoadTexture(m_render, "assets/scenes/tileset-sliced.png"))
 {
 	SDL_GetRendererOutputSize(m_render, &renderW, &renderH);
-	SDL_QueryTexture(background, nullptr, nullptr, &backgroundW, &backgroundH);
+
+	SDL_QueryTexture(background.get(), nullptr, nullptr, &backgroundW, &backgroundH);
 	SDL_QueryTexture(graveyard, nullptr, nullptr, &graveyardW, &graveyardH);
 	SDL_QueryTexture(mountains, nullptr, nullptr, &mountainsW, &mountainsH);
 	SDL_QueryTexture(tileset_sliced, nullptr, nullptr, &tileset_slicedW, &tileset_slicedH);
@@ -16,7 +17,6 @@ Scenes::Scenes(SDL_Renderer* render)
 
 Scenes::~Scenes()
 {
-	SDL_DestroyTexture(background);
 	SDL_DestroyTexture(graveyard);
 	SDL_DestroyTexture(mountains);
 	SDL_DestroyTexture(tileset_sliced);
@@ -27,7 +27,7 @@ void Scenes::task()
 	{
 		SDL_Rect sRect{ 0, 0, backgroundW, backgroundH };
 		SDL_Rect dRect{ backgroundx, backgroundy, renderW * 1.8, renderH * 1.8 };
-		SDL_RenderCopy(m_render, background, &sRect, &dRect);
+		SDL_RenderCopy(m_render, background.get(), &sRect, &dRect);
 	}
 
 	for (int i = -10; i < 10; i++)
@@ -45,7 +45,10 @@ void Scenes::task()
 		SDL_Rect dRect{ graveyardX, 250, graveyardW * 4, graveyardH * 4 };
 		SDL_RenderCopy(m_render, graveyard, &sRect, &dRect);
 	}
+}
 
+void Scenes::task_tileset_sliced()
+{
 	for (int i = -30; i < 30; i++)
 	{
 		int tileset_slicedY = 180 * i - tileset_sliced_move;
@@ -63,9 +66,9 @@ void Scenes::setKeyboard(bool left, bool right)
 		{
 			backgroundx += 1;
 		}
-		mountains_move += 2;
-		graveyard_move += 3;
-		tileset_sliced_move += 4;
+		mountains_move -= 2;
+		graveyard_move -= 3;
+		tileset_sliced_move -= 4;
 	}
 	if (right)
 	{
@@ -73,8 +76,8 @@ void Scenes::setKeyboard(bool left, bool right)
 		{
 			backgroundx -= 1;
 		}
-		mountains_move -= 2;
-		graveyard_move -= 3;
-		tileset_sliced_move -= 4;
+		mountains_move += 2;
+		graveyard_move += 3;
+		tileset_sliced_move += 4;
 	}
 }

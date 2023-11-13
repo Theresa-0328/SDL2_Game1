@@ -22,6 +22,7 @@ Application::Application()
 	SDL_GetRendererOutputSize(m_render, &renderW, &renderH);
 	m_scenes = std::make_unique<Scenes>(m_render);
 	m_player = std::make_unique<Player>(m_render);
+	m_boss = std::make_unique<Boss>(m_render);
 }
 
 Application::~Application()
@@ -120,7 +121,9 @@ void Application::render()
 	SDL_RenderClear(m_render);
 
 	m_scenes->task();
+	m_boss->task();
 	m_player->task();
+	m_scenes->task_tileset_sliced();
 
 	SDL_RenderPresent(m_render);
 }
