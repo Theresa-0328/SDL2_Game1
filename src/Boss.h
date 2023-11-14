@@ -1,10 +1,11 @@
-#pragma once
+﻿#pragma once
 #include <vector>
 
 #include <SDL.h>
 #include <SDL_image.h>
 
 #include "Deleter.hpp"
+
 class Boss
 {
 public:
@@ -17,13 +18,11 @@ private:
 	int renderW{};
 	int renderH{};
 
-	SDL_RendererFlip human_flip = SDL_FLIP_NONE;
-
-	int human_index = 0;
-	int human_maxDuration = 150;
-	int human_currentTime = SDL_GetTicks();
+	SDL_RendererFlip flip = SDL_FLIP_NONE;
+	int index = 0;
+	int maxDuration = 150;
 	int currentTime = SDL_GetTicks();
-	int human_spriteChangeTime = human_currentTime + human_maxDuration;
+	int spriteChangeTime = currentTime + maxDuration;
 
 	std::shared_ptr<SDL_Texture> Idle_img;
 	std::vector<std::pair<int, int>> idle{ {0, 0}, {0, 1}, {0, 2}, {0, 3},{0, 4},{0, 5},{0, 6},{0, 7},{0, 8} };
@@ -70,4 +69,5 @@ private:
 	void DeathProccess();
 	void DashSkill();
 	void BeHitProccess();
+	void FirePillarSkill();
 };

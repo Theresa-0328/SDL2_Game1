@@ -1,4 +1,4 @@
-#include "Boss.h"
+﻿#include "Boss.h"
 
 Boss::Boss(SDL_Renderer* render)
 	:m_render(render),
@@ -20,25 +20,25 @@ Boss::~Boss()
 
 void Boss::task()
 {
-	SDL_Rect sRect = { current[human_index].second * 90, current[human_index].first * 90, 90,90 };
-	SDL_Rect dRect = { 0, 430, 310, 310 };
-	SDL_RenderCopy(m_render, cur_ptr.get(), &sRect, &dRect);
+	SDL_Rect sRect = { current[index].second * 90, current[index].first * 90, 90,90 };
+	SDL_Rect dRect = { 0, 380, 360, 360 };
+	SDL_RenderCopyEx(m_render, cur_ptr.get(), &sRect, &dRect, 0, nullptr, flip);
 
 	currentTime = SDL_GetTicks();
-	if (currentTime > human_spriteChangeTime)
+	if (currentTime > spriteChangeTime)
 	{
-		human_spriteChangeTime += human_maxDuration;
-		human_index++;
-		if (human_index >= current.size())
+		spriteChangeTime += maxDuration;
+		index++;
+		if (index >= current.size())
 		{
-			human_index = 0;
+			index = 0;
 		}
 	}
 }
 
 void Boss::getInfo()
 {
-	if (human_index != 0)
+	if (index != 0)
 		return;
 	if (a == 0)
 	{
@@ -61,7 +61,7 @@ void Boss::UpdateBossState(BossState state)
 		FireBallSkill();
 		break;
 	case Boss::_FirePillar:
-
+		FirePillarSkill();
 		break;
 	case Boss::_Dash:
 		DashSkill();
@@ -108,4 +108,9 @@ void Boss::BeHitProccess()
 {
 	current = Get_Hit;
 	cur_ptr = Get_Hit_img;
+}
+
+void Boss::FirePillarSkill()
+{
+
 }

@@ -23,6 +23,7 @@ Application::Application()
 	m_scenes = std::make_unique<Scenes>(m_render);
 	m_player = std::make_unique<Player>(m_render);
 	m_boss = std::make_unique<Boss>(m_render);
+	m_fireball = std::make_unique<FireBall>(m_render);
 }
 
 Application::~Application()
@@ -114,6 +115,7 @@ void Application::update()
 	m_scenes->setKeyboard(k_left, k_right);
 	m_player->setKeyboard(k_left, k_right, k_J);
 	m_boss->getInfo();
+	//m_fireball->task();
 }
 
 void Application::render()
@@ -125,6 +127,7 @@ void Application::render()
 	m_boss->task();
 	m_player->task();
 	m_scenes->task_tileset_sliced();
+	m_fireball->task();
 
 	SDL_RenderPresent(m_render);
 }
