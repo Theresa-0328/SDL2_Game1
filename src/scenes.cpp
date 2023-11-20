@@ -22,7 +22,7 @@ Scenes::~Scenes()
 	SDL_DestroyTexture(tileset_sliced);
 }
 
-void Scenes::task()
+void Scenes::RenderBackground()
 {
 	{
 		SDL_Rect sRect{ 0, 0, backgroundW, backgroundH };
@@ -47,7 +47,7 @@ void Scenes::task()
 	}
 }
 
-void Scenes::task_tileset_sliced()
+void Scenes::RenderForeground()
 {
 	for (int i = -30; i < 30; i++)
 	{

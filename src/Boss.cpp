@@ -8,22 +8,21 @@ Boss::Boss(SDL_Renderer* render)
 	Walk_img(IMG_LoadTexture(m_render, "assets/Boss/Worm/Walk.png"), TextureDeleter),
 	Get_Hit_img(IMG_LoadTexture(m_render, "assets/Boss/Worm/Get Hit.png"), TextureDeleter)
 {
-	SDL_GetRendererOutputSize(m_render, &renderW, &renderH);
-
-	SDL_QueryTexture(Idle_img.get(), nullptr, nullptr, &IdleW, &IdleH);
-	SDL_QueryTexture(Attack_img.get(), nullptr, nullptr, &AttackW, &AttackH);
 }
 
 Boss::~Boss()
 {
 }
 
-void Boss::task()
+void Boss::Render()
 {
-	SDL_Rect sRect = { current[index].second * 90, current[index].first * 90, 90,90 };
+	SDL_Rect sRect = { current[index] * 90, 0, 90,90 };
+	if (index == 11)
+	{
+		b1 = true;
+	}
 	SDL_Rect dRect = { 0, 380, 360, 360 };
 	SDL_RenderCopyEx(m_render, cur_ptr.get(), &sRect, &dRect, 0, nullptr, flip);
-
 	currentTime = SDL_GetTicks();
 	if (currentTime > spriteChangeTime)
 	{
@@ -36,21 +35,11 @@ void Boss::task()
 	}
 }
 
-void Boss::getInfo()
+void Boss::update()
 {
 	if (index != 0)
 		return;
-	if (a == 0)
-	{
-		UpdateBossState(_FireBall);
-		a = 1;
-		return;
-	}
-	if (a == 1)
-	{
-		UpdateBossState(_Dash);
-		a = 0;
-	}
+	UpdateBossState(m_boss_state);
 }
 
 void Boss::UpdateBossState(BossState state)
@@ -84,12 +73,14 @@ void Boss::FireBallSkill()
 {
 	current = Attack;
 	cur_ptr = Attack_img;
+	m_boss_state = _Dash;
 }
 
 void Boss::IdleProccess()
 {
 	current = idle;
 	cur_ptr = Idle_img;
+	m_boss_state = _FireBall;
 }
 
 void Boss::DeathProccess()
@@ -102,6 +93,7 @@ void Boss::DashSkill()
 {
 	current = Walk;
 	cur_ptr = Walk_img;
+	m_boss_state = _FireBall;
 }
 
 void Boss::BeHitProccess()
@@ -112,5 +104,6 @@ void Boss::BeHitProccess()
 
 void Boss::FirePillarSkill()
 {
-
+	current = Attack;
+	cur_ptr = Attack_img;
 }

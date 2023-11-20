@@ -114,8 +114,19 @@ void Application::update()
 {
 	m_scenes->setKeyboard(k_left, k_right);
 	m_player->setKeyboard(k_left, k_right, k_J);
-	m_boss->getInfo();
-	//m_fireball->task();
+	m_boss->update();
+	if (m_boss->b1)
+	{
+
+		m_fireball->start = false;
+
+	}
+	else
+	{
+		m_fireball->start = true;
+		t1 = 0;
+	}
+	m_fireball->Update();
 }
 
 void Application::render()
@@ -123,11 +134,11 @@ void Application::render()
 	SDL_SetRenderDrawColor(m_render, 135, 206, 0, 0xFF);
 	SDL_RenderClear(m_render);
 
-	m_scenes->task();
-	m_boss->task();
+	m_scenes->RenderBackground();
+	m_boss->Render();
 	m_player->task();
-	m_scenes->task_tileset_sliced();
-	m_fireball->task();
+	m_scenes->RenderForeground();
+	m_fireball->Render();
 
 	SDL_RenderPresent(m_render);
 }

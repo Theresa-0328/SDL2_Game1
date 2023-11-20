@@ -9,8 +9,8 @@ class Scenes
 public:
 	Scenes(SDL_Renderer* render);
 	~Scenes();
-	void task();
-	void task_tileset_sliced();
+	void RenderBackground();
+	void RenderForeground();
 	void setKeyboard(bool left, bool right);
 private:
 	SDL_Renderer* m_render;

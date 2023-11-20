@@ -3,9 +3,7 @@
 Player::Player(SDL_Renderer* render)
 	:m_render(render),
 	player2(IMG_LoadTexture(render, "assets/player/player2.png"))
-{
-	SDL_GetRendererOutputSize(m_render, &renderW, &renderH);
-}
+{}
 
 Player::~Player()
 {

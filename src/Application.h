@@ -42,4 +42,6 @@ private:
 	bool k_left{};
 	bool k_right{};
 	bool k_J{};
+
+	int t1{ 0 };
 };

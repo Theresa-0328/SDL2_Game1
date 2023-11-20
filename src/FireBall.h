@@ -10,9 +10,10 @@ class FireBall
 public:
 	FireBall(SDL_Renderer* render);
 	~FireBall();
-	void task();
-	void getInfo();
+	void Render();
+	void Update();
 	bool isExplosion(SDL_Rect rect2, int i);
+	bool start{ true };
 private:
 	SDL_Renderer* m_render;
 
@@ -23,11 +24,9 @@ private:
 	int spriteChangeTime = currentTime + maxDuration;
 
 	std::shared_ptr<SDL_Texture> FireBall_move_img;
-	std::vector<std::pair<int, int>> FireBall_move{ {0, 0}, {0, 1}, {0, 2}, {0, 3},{0, 4},{0, 5} };
-	int FireBall_MoveW{};
-	int FireBall_MoveH{};
+	const std::vector<int> FireBall_move{ 0,1,2,3,4,5 };
 
-	std::vector<std::pair<int, int>> current{ FireBall_move };
+	const std::vector<int> current{ FireBall_move };
 	std::shared_ptr<SDL_Texture> cur_ptr{ FireBall_move_img };
 
 	std::vector<int> a1;

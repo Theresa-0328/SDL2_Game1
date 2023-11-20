@@ -10,15 +10,18 @@ FireBall::FireBall(SDL_Renderer* render)
 
 FireBall::~FireBall()
 {
+	delete explosion;
 }
 
 int a = 0;
-void FireBall::task()
+void FireBall::Render()
 {
+	if (start)
+		return;
 	for (int i = -1; i < 6; i++)
 	{
-		SDL_Rect sRect = { current[index].second * 46, 0, 46,46 };
-		SDL_Rect dRect = { 100 + a * 5, 800 - (380 + a * i), 160, 160 };
+		SDL_Rect sRect = { current[index] * 46, 0, 46,46 };
+		SDL_Rect dRect = { 180 + a * 5, 830 - (380 + a * i), 160, 160 };
 		if (std::find(a1.begin(), a1.end(), i) != a1.end())
 		{
 			continue;
@@ -48,7 +51,7 @@ void FireBall::task()
 	explosion->task();
 }
 
-void FireBall::getInfo()
+void FireBall::Update()
 {
 
 }

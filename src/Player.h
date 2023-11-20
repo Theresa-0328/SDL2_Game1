@@ -13,8 +13,6 @@ public:
 	void setKeyboard(bool left, bool right, bool J);
 private:
 	SDL_Renderer* m_render;
-	int renderW{};
-	int renderH{};
 
 	SDL_Texture* player2;
 	int player2_x{ 640 - 75 };
