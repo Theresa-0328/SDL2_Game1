@@ -17,7 +17,7 @@ Boss::~Boss()
 void Boss::Render()
 {
 	SDL_Rect sRect = { current[index] * 90, 0, 90,90 };
-	if (index == 11)
+	if (current == Attack && index == 11)
 	{
 		b1 = true;
 	}

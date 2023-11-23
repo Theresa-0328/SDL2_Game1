@@ -16,8 +16,11 @@ FireBall::~FireBall()
 int a = 0;
 void FireBall::Render()
 {
-	if (start)
+	LifeTime -= deltaTime;
+	if (LifeTime <= 0)
+	{
 		return;
+	}
 	for (int i = -1; i < 6; i++)
 	{
 		SDL_Rect sRect = { current[index] * 46, 0, 46,46 };
@@ -65,4 +68,13 @@ bool FireBall::isExplosion(SDL_Rect rect2, int i)
 		return true;
 	}
 	return false;
+}
+
+void FireBall::Start()
+{
+	if (LifeTime >= 0)
+		return;
+	Speed = 5;
+	Damage = 8;
+	LifeTime = 200;
 }

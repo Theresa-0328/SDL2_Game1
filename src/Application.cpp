@@ -117,14 +117,7 @@ void Application::update()
 	m_boss->update();
 	if (m_boss->b1)
 	{
-
-		m_fireball->start = false;
-
-	}
-	else
-	{
-		m_fireball->start = true;
-		t1 = 0;
+		m_fireball->Start();
 	}
 	m_fireball->Update();
 }

@@ -13,7 +13,7 @@ public:
 	void Render();
 	void Update();
 	bool isExplosion(SDL_Rect rect2, int i);
-	bool start{ true };
+	void Start();
 private:
 	SDL_Renderer* m_render;
 
@@ -31,4 +31,9 @@ private:
 
 	std::vector<int> a1;
 	Explosion* explosion;
+
+	int Speed{};
+	int Damage{};
+	int LifeTime{};
+	int deltaTime{ 1 };
 };
