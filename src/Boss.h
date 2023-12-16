@@ -6,7 +6,6 @@
 #include <SDL_image.h>
 
 #include "Deleter.hpp"
-#include "FireBall.h"
 
 class Boss
 {
@@ -15,7 +14,16 @@ public:
 	~Boss();
 	void Render();
 	void update();
-	bool b1 = false;
+	enum BossState
+	{
+		_FireBall,
+		_FirePillar,
+		_Dash,
+		_Idle,
+		_BeHit,
+		_Death,
+	};
+	BossState getBossStart();
 private:
 	SDL_Renderer* m_render;
 	int renderW{};
@@ -25,7 +33,7 @@ private:
 	int index = 0;
 	int maxDuration = 150;
 	int currentTime = SDL_GetTicks();
-	int spriteChangeTime = currentTime + maxDuration;
+	int ChangeTime = currentTime + maxDuration;
 
 	std::shared_ptr<SDL_Texture> Idle_img;
 	const std::vector<int> idle{ 0,1,2,3,4,5,6,7,8 };
@@ -45,16 +53,6 @@ private:
 	std::vector<int> current{ idle };
 	std::shared_ptr<SDL_Texture> cur_ptr{ Idle_img };
 
-	enum BossState
-	{
-		_FireBall,
-		_FirePillar,
-		_Dash,
-		_Idle,
-		_BeHit,
-		_Death,
-	};
-
 	BossState m_boss_state = _Idle;
 
 	void UpdateBossState(BossState state);
@@ -64,4 +62,8 @@ private:
 	void DashSkill();
 	void BeHitProccess();
 	void FirePillarSkill();
+
+	uint64_t FireBallAttackTime{};
+	uint64_t DashSkillTime{};
+	uint64_t IdleTime{ 2500 + SDL_GetTicks() };
 };

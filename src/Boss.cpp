@@ -17,16 +17,12 @@ Boss::~Boss()
 void Boss::Render()
 {
 	SDL_Rect sRect = { current[index] * 90, 0, 90,90 };
-	if (current == Attack && index == 11)
-	{
-		b1 = true;
-	}
 	SDL_Rect dRect = { 0, 380, 360, 360 };
 	SDL_RenderCopyEx(m_render, cur_ptr.get(), &sRect, &dRect, 0, nullptr, flip);
 	currentTime = SDL_GetTicks();
-	if (currentTime > spriteChangeTime)
+	if (currentTime > ChangeTime)
 	{
-		spriteChangeTime += maxDuration;
+		ChangeTime += maxDuration;
 		index++;
 		if (index >= current.size())
 		{
@@ -37,8 +33,6 @@ void Boss::Render()
 
 void Boss::update()
 {
-	if (index != 0)
-		return;
 	UpdateBossState(m_boss_state);
 }
 
@@ -73,14 +67,24 @@ void Boss::FireBallSkill()
 {
 	current = Attack;
 	cur_ptr = Attack_img;
-	m_boss_state = _Dash;
+	if (FireBallAttackTime <= SDL_GetTicks())
+	{
+		DashSkillTime = static_cast<uint64_t>(5000) + SDL_GetTicks();
+		m_boss_state = _Dash;
+		index = 0;
+	}
 }
 
 void Boss::IdleProccess()
 {
 	current = idle;
 	cur_ptr = Idle_img;
-	m_boss_state = _FireBall;
+	if (IdleTime <= SDL_GetTicks())
+	{
+		FireBallAttackTime = static_cast<uint64_t>(7200) + SDL_GetTicks();
+		m_boss_state = _FireBall;
+		index = 0;
+	}
 }
 
 void Boss::DeathProccess()
@@ -93,7 +97,12 @@ void Boss::DashSkill()
 {
 	current = Walk;
 	cur_ptr = Walk_img;
-	m_boss_state = _FireBall;
+	if (DashSkillTime <= SDL_GetTicks())
+	{
+		FireBallAttackTime = static_cast<uint64_t>(7200) + SDL_GetTicks();
+		m_boss_state = _FireBall;
+		index = 0;
+	}
 }
 
 void Boss::BeHitProccess()
@@ -106,4 +115,9 @@ void Boss::FirePillarSkill()
 {
 	current = Attack;
 	cur_ptr = Attack_img;
+}
+
+Boss::BossState Boss::getBossStart()
+{
+	return m_boss_state;
 }

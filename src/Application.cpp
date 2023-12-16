@@ -115,11 +115,7 @@ void Application::update()
 	m_scenes->setKeyboard(k_left, k_right);
 	m_player->setKeyboard(k_left, k_right, k_J);
 	m_boss->update();
-	if (m_boss->b1)
-	{
-		m_fireball->Start();
-	}
-	m_fireball->Update();
+	m_fireball->Update(m_boss.get());
 }
 
 void Application::render()
