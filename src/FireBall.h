@@ -53,10 +53,6 @@ private:
 		int currentTime{};
 		int maxDuration{ 100 };
 		int ChangeTime{ (int)SDL_GetTicks() + maxDuration };
-		void updateChangeTime()
-		{
-			ChangeTime = (int)SDL_GetTicks() + maxDuration;
-		}
 		void updateIndex()
 		{
 			currentTime = SDL_GetTicks();
@@ -74,5 +70,5 @@ private:
 	static constexpr int FireBallWaitTime{ 1300 };
 
 	std::shared_ptr<SDL_Texture> Explosion_img;
-	const std::vector<int> Explosion{ 0,1,2,3,4,5 };
+	const std::vector<int> Explosion{ 0,0, 1, 2, 3, 4, 5 ,6 };
 };

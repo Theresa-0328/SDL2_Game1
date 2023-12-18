@@ -47,7 +47,7 @@ void FireBall::Render()
 	{
 		for (int i{ 0 }; i < 7; i++)
 		{
-			if (FBSGroup[i].index > 5)
+			if (FBSGroup[i].index > 7)
 			{
 				continue;
 			}
@@ -69,7 +69,7 @@ void FireBall::Render()
 	{
 		for (int i{ 7 }; i < 14; i++)
 		{
-			if (FBSGroup[i].index > 5)
+			if (FBSGroup[i].index > 7)
 			{
 				continue;
 			}
@@ -90,7 +90,7 @@ void FireBall::Render()
 	{
 		for (int i{ 14 }; i < 21; i++)
 		{
-			if (FBSGroup[i].index > 5)
+			if (FBSGroup[i].index > 7)
 			{
 				continue;
 			}
@@ -161,7 +161,6 @@ void FireBall::Start()
 	for (int i{ 0 }; i < 21; i++)
 	{
 		FBSGroup[i] = { { 140, 450, 185,185 } ,0 ,0 };
-		FBSGroup[i].updateChangeTime();
 	}
 }
 
