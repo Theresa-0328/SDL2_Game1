@@ -1,8 +1,8 @@
 ﻿#include "Application.h"
 
 
-Application::Application()
-	:gWINDOW_WEIGHT(1280),
+Application::Application() :
+	gWINDOW_WEIGHT(1280),
 	gWINDOW_HEIGHT(720),
 	m_screen(nullptr),
 	m_render(nullptr),
@@ -24,6 +24,7 @@ Application::Application()
 	m_player = std::make_unique<Player>(m_render);
 	m_boss = std::make_unique<Boss>(m_render);
 	m_fireball = std::make_unique<FireBall>(m_render);
+	m_firepillar = std::make_unique<FirePillar>(m_render);
 }
 
 Application::~Application()
@@ -128,6 +129,7 @@ void Application::render()
 	m_player->task();
 	m_scenes->RenderForeground();
 	m_fireball->Render();
+	m_firepillar->Render();
 
 	SDL_RenderPresent(m_render);
 

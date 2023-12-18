@@ -13,6 +13,7 @@
 #include "Player.h"
 #include "Boss.h"
 #include "FireBall.h"
+#include "FirePillar.h"
 
 class Application
 {
@@ -35,10 +36,13 @@ private:
 	uint32_t gFPS{ 60 };
 	uint32_t gFPS_TIME{ 1000 / gFPS };
 	SDL_Event event{};
+
 	std::unique_ptr<Scenes> m_scenes;
 	std::unique_ptr<Player> m_player;
 	std::unique_ptr<Boss> m_boss;
 	std::unique_ptr<FireBall> m_fireball;
+	std::unique_ptr<FirePillar> m_firepillar;
+
 	bool k_left{};
 	bool k_right{};
 	bool k_J{};

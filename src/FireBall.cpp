@@ -19,8 +19,8 @@ Point rotatePoint(const Point& A, const Point& B, double angle) {
 
 FireBall::FireBall(SDL_Renderer* render) :
 	m_render(render),
-	FireBall_move_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Ball/Move.png"), TextureDeleter),
 	bossDead(false),
+	FireBall_move_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Ball/Move.png"), TextureDeleter),
 	Explosion_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Ball/Explosion.png"), TextureDeleter)
 {
 
@@ -42,7 +42,7 @@ void FireBall::Render()
 		FBSGroup[i].boom = isExplosion(FBSGroup[i].FireBallLocation);
 	}
 	Move();
-	SDL_Rect sRect = { current[index] * 46, 0, 46,46 };
+	SDL_Rect sRect = { FireBall_move_vec[index] * 46, 0, 46,46 };
 	if (LifeTime < FireBallAttackTime * 5 - FireBallWaitTime + SDL_GetTicks())
 	{
 		for (int i{ 0 }; i < 7; i++)
@@ -112,7 +112,7 @@ void FireBall::Render()
 	{
 		ChangeTime += maxDuration;
 		index++;
-		if (index >= current.size())
+		if (index >= FireBall_move_vec.size())
 		{
 			index = 0;
 		}
@@ -140,13 +140,10 @@ bool FireBall::isExplosion(SDL_Rect rect2)
 	{
 		return true;
 	}
-	rect1.x = 640;
-	rect1.y = 480;
-	rect1.w = 100;
-	rect1.h = 100;
+	SDL_Rect player{ 640,480,100,100 };
 	SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
-	SDL_RenderDrawRect(m_render, &rect1);
-	if (SDL_HasIntersection(&rect1, &rect2))
+	SDL_RenderDrawRect(m_render, &player);
+	if (SDL_HasIntersection(&player, &rect2))
 	{
 		return true;
 	}

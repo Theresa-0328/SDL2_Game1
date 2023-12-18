@@ -63,18 +63,6 @@ void Boss::UpdateBossState(BossState state)
 	}
 }
 
-void Boss::FireBallSkill()
-{
-	current = Attack;
-	cur_ptr = Attack_img;
-	if (FireBallAttackTime <= SDL_GetTicks())
-	{
-		DashSkillTime = static_cast<uint64_t>(5000) + SDL_GetTicks();
-		m_boss_state = _Dash;
-		index = 0;
-	}
-}
-
 void Boss::IdleProccess()
 {
 	current = idle;
@@ -84,6 +72,38 @@ void Boss::IdleProccess()
 		FireBallAttackTime = static_cast<uint64_t>(7200) + SDL_GetTicks();
 		m_boss_state = _FireBall;
 		index = 0;
+	}
+}
+
+void Boss::FireBallSkill()
+{
+	current = Attack;
+	cur_ptr = Attack_img;
+	if (FireBallAttackTime <= SDL_GetTicks() && !isDead)
+	{
+		IdleTime = static_cast<uint64_t>(4800) + SDL_GetTicks();
+		m_boss_state = _Idle;
+		index = 0;
+	}
+	else if (isDead)
+	{
+		m_boss_state = _Death;
+	}
+}
+
+void Boss::FirePillarSkill()
+{
+	current = Attack;
+	cur_ptr = Attack_img;
+	if (FirePillarAttackTime <= SDL_GetTicks() && !isDead)
+	{
+		IdleTime = static_cast<uint64_t>(4800) + SDL_GetTicks();
+		m_boss_state = _Idle;
+		index = 0;
+	}
+	else if (isDead)
+	{
+		m_boss_state = _Death;
 	}
 }
 
@@ -109,12 +129,6 @@ void Boss::BeHitProccess()
 {
 	current = Get_Hit;
 	cur_ptr = Get_Hit_img;
-}
-
-void Boss::FirePillarSkill()
-{
-	current = Attack;
-	cur_ptr = Attack_img;
 }
 
 Boss::BossState Boss::getBossStart()

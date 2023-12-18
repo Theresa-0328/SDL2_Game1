@@ -1,11 +1,11 @@
 ﻿#pragma once
+
 #include <vector>
 #include <array>
 #include <iostream>
 
 #include "Boss.h"
 #include "Deleter.hpp"
-#include "Explosion.h"
 
 class FireBall
 {
@@ -26,10 +26,7 @@ private:
 	int ChangeTime = currentTime + maxDuration;
 
 	std::shared_ptr<SDL_Texture> FireBall_move_img;
-	const std::vector<int> FireBall_move{ 0,1,2,3,4,5 };
-
-	const std::vector<int> current{ FireBall_move };
-	std::shared_ptr<SDL_Texture> cur_ptr{ FireBall_move_img };
+	const std::vector<int> FireBall_move_vec{ 0,1,2,3,4,5 };
 
 	int Speed{};
 	int Damage{};
@@ -39,11 +36,6 @@ private:
 	bool isExplosion(SDL_Rect rect2);
 
 	bool bossDead;
-	//static constexpr int FireBallInitX{ 140 };
-	//static constexpr int FireBallInitY{ 450 };
-	//SDL_Rect dRect1{ FireBallInitX, FireBallInitY, 185,185 };
-	//SDL_Rect dRect2{ FireBallInitX, FireBallInitY, 185,185 };
-	//SDL_Rect dRect3{ FireBallInitX, FireBallInitY, 185,185 };
 
 	struct FireBallState
 	{
@@ -70,5 +62,5 @@ private:
 	static constexpr int FireBallWaitTime{ 1300 };
 
 	std::shared_ptr<SDL_Texture> Explosion_img;
-	const std::vector<int> Explosion{ 0,0, 1, 2, 3, 4, 5 ,6 };
+	const std::vector<int> Explosion{ 0, 0, 1, 2, 3, 4, 5 ,6 };
 };

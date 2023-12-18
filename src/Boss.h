@@ -1,4 +1,5 @@
 ﻿#pragma once
+
 #include <vector>
 #include <array>
 
@@ -25,6 +26,7 @@ public:
 	};
 	BossState getBossStart();
 private:
+	bool isDead{ false };
 	SDL_Renderer* m_render;
 	int renderW{};
 	int renderH{};
@@ -53,6 +55,7 @@ private:
 	std::vector<int> current{ idle };
 	std::shared_ptr<SDL_Texture> cur_ptr{ Idle_img };
 
+	int MaxHp{ 200 };
 	BossState m_boss_state = _Idle;
 
 	void UpdateBossState(BossState state);
@@ -66,4 +69,5 @@ private:
 	uint64_t FireBallAttackTime{};
 	uint64_t DashSkillTime{};
 	uint64_t IdleTime{ 2500 + SDL_GetTicks() };
+	uint64_t FirePillarAttackTime{};
 };
