@@ -117,7 +117,7 @@ void Application::update()
 	m_boss->update();
 	m_fireball->Update(m_boss.get());
 }
-
+int a = 0;
 void Application::render()
 {
 	SDL_SetRenderDrawColor(m_render, 135, 206, 0, 0xFF);
@@ -130,4 +130,31 @@ void Application::render()
 	m_fireball->Render();
 
 	SDL_RenderPresent(m_render);
+
+	//SDL_Texture* texture = SDL_CreateTexture(
+	//	m_render,
+	//	SDL_PIXELFORMAT_ARGB8888,  // 根据需要使用适当的格式
+	//	SDL_TEXTUREACCESS_TARGET,
+	//	gWINDOW_WEIGHT,
+	//	gWINDOW_HEIGHT
+	//);
+	//SDL_SetRenderTarget(m_render, texture);
+
+	//SDL_RenderPresent(m_render);
+
+	//SDL_SetRenderTarget(m_render, NULL);
+
+	//SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormat(0, 1280, 720, 32, SDL_PIXELFORMAT_ARGB8888);
+
+	//// 将纹理复制到 surface
+	//SDL_RenderReadPixels(
+	//	m_render,
+	//	NULL,
+	//	SDL_PIXELFORMAT_ARGB8888,
+	//	surface->pixels,
+	//	surface->pitch
+	//);
+	//a++;
+	//std::string str = std::to_string(a) + "output.png";
+	//IMG_SavePNG(surface, str.c_str());
 }

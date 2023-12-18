@@ -1,17 +1,34 @@
 ﻿#include "FireBall.h"
 
+#include <cmath>
+
+struct Point
+{
+	double x;
+	double y;
+};
+
+Point rotatePoint(const Point& A, const Point& B, double angle) {
+	double theta = angle * M_PI / 180.0;
+	double x_C = cos(theta) * (B.x - A.x) - sin(theta) * (B.y - A.y) + A.x;
+	double y_C = sin(theta) * (B.x - A.x) + cos(theta) * (B.y - A.y) + A.y;
+	return { x_C, y_C };
+}
+
+/*------------------------------------*/
 
 FireBall::FireBall(SDL_Renderer* render) :
 	m_render(render),
 	FireBall_move_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Ball/Move.png"), TextureDeleter),
-	bossDead(false)
+	bossDead(false),
+	Explosion_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Ball/Explosion.png"), TextureDeleter)
 {
-	explosion = new Explosion(m_render);
+
 }
 
 FireBall::~FireBall()
 {
-	delete explosion;
+
 }
 
 void FireBall::Render()
@@ -20,31 +37,75 @@ void FireBall::Render()
 	{
 		return;
 	}
+	for (int i{ 0 }; i < 21; i++)
+	{
+		FBSGroup[i].boom = isExplosion(FBSGroup[i].FireBallLocation);
+	}
 	Move();
-	//for (int i = -1; i < 6; i++)
-	//{
-	//	SDL_Rect sRect = { current[index] * 46, 0, 46,46 };
-
-	//	//if (std::find(a1.begin(), a1.end(), i) != a1.end())
-	//	//{
-	//	//	continue;
-	//	//}
-	//	//if (isExplosion(dRect, i))
-	//	//{
-	//	//	explosion->setExp(100 + a * 5, 800 - (380 + a * i), 0);
-	//	//}
 	SDL_Rect sRect = { current[index] * 46, 0, 46,46 };
 	if (LifeTime < FireBallAttackTime * 5 - FireBallWaitTime + SDL_GetTicks())
 	{
-		SDL_RenderCopyEx(m_render, FireBall_move_img.get(), &sRect, &dRect1, 0, nullptr, flip);
+		for (int i{ 0 }; i < 7; i++)
+		{
+			if (FBSGroup[i].index > 5)
+			{
+				continue;
+			}
+			if (FBSGroup[i].boom == true)
+			{
+				SDL_SetRenderDrawColor(m_render, 0, 0, 255, 0xFF);
+				SDL_RenderDrawRect(m_render, &FBSGroup[i].FireBallLocation);
+
+				SDL_Rect sRect = { Explosion[FBSGroup[i].index] * 46, 0, 46,46 };
+				SDL_RenderCopyEx(m_render, Explosion_img.get(), &sRect, &FBSGroup[i].FireBallLocation, 0, nullptr, flip);
+				FBSGroup[i].updateIndex();
+				continue;
+			}
+			SDL_RenderCopyEx(m_render, FireBall_move_img.get(), &sRect, &FBSGroup[i].FireBallLocation, (i - 1) * -15, nullptr, flip);
+			//std::cout << i << " x " << dRect1.x << " y " << dRect1.y << std::endl;
+		}
 	}
 	if (LifeTime < FireBallAttackTime * 4 - FireBallWaitTime + SDL_GetTicks())
 	{
-		SDL_RenderCopyEx(m_render, FireBall_move_img.get(), &sRect, &dRect2, 0, nullptr, flip);
+		for (int i{ 7 }; i < 14; i++)
+		{
+			if (FBSGroup[i].index > 5)
+			{
+				continue;
+			}
+			if (FBSGroup[i].boom == true)
+			{
+				SDL_SetRenderDrawColor(m_render, 0, 0, 255, 0xFF);
+				SDL_RenderDrawRect(m_render, &FBSGroup[i].FireBallLocation);
+
+				SDL_Rect sRect = { Explosion[FBSGroup[i].index] * 46, 0, 46,46 };
+				SDL_RenderCopyEx(m_render, Explosion_img.get(), &sRect, &FBSGroup[i].FireBallLocation, 0, nullptr, flip);
+				FBSGroup[i].updateIndex();
+				continue;
+			}
+			SDL_RenderCopyEx(m_render, FireBall_move_img.get(), &sRect, &FBSGroup[i].FireBallLocation, (i - 8) * -15, nullptr, flip);
+		}
 	}
 	if (LifeTime < FireBallAttackTime * 3 - FireBallWaitTime + SDL_GetTicks())
 	{
-		SDL_RenderCopyEx(m_render, FireBall_move_img.get(), &sRect, &dRect3, 0, nullptr, flip);
+		for (int i{ 14 }; i < 21; i++)
+		{
+			if (FBSGroup[i].index > 5)
+			{
+				continue;
+			}
+			if (FBSGroup[i].boom == true)
+			{
+				SDL_SetRenderDrawColor(m_render, 0, 0, 255, 0xFF);
+				SDL_RenderDrawRect(m_render, &FBSGroup[i].FireBallLocation);
+
+				SDL_Rect sRect = { Explosion[FBSGroup[i].index] * 46, 0, 46,46 };
+				SDL_RenderCopyEx(m_render, Explosion_img.get(), &sRect, &FBSGroup[i].FireBallLocation, 0, nullptr, flip);
+				FBSGroup[i].updateIndex();
+				continue;
+			}
+			SDL_RenderCopyEx(m_render, FireBall_move_img.get(), &sRect, &FBSGroup[i].FireBallLocation, (i - 15) * -15, nullptr, flip);
+		}
 	}
 	currentTime = SDL_GetTicks();
 	if (currentTime > ChangeTime)
@@ -56,7 +117,6 @@ void FireBall::Render()
 			index = 0;
 		}
 	}
-	//explosion->task();
 }
 
 void FireBall::Update(Boss* boss)
@@ -71,12 +131,23 @@ void FireBall::Update(Boss* boss)
 	}
 }
 
-bool FireBall::isExplosion(SDL_Rect rect2, int i)
+bool FireBall::isExplosion(SDL_Rect rect2)
 {
 	SDL_Rect rect1{ 0, 700, 1280, 10 };
+	SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
+	SDL_RenderDrawRect(m_render, &rect1);
 	if (SDL_HasIntersection(&rect1, &rect2))
 	{
-		a1.push_back(i);
+		return true;
+	}
+	rect1.x = 640;
+	rect1.y = 480;
+	rect1.w = 100;
+	rect1.h = 100;
+	SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
+	SDL_RenderDrawRect(m_render, &rect1);
+	if (SDL_HasIntersection(&rect1, &rect2))
+	{
 		return true;
 	}
 	return false;
@@ -85,11 +156,13 @@ bool FireBall::isExplosion(SDL_Rect rect2, int i)
 void FireBall::Start()
 {
 	Speed = 7;
-	//Damage = 8;
+	Damage = 8;
 	LifeTime = FireBallAttackTime * 5 + SDL_GetTicks();
-	dRect1.x = FireBallInitX;
-	dRect2.x = FireBallInitX;
-	dRect3.x = FireBallInitX;
+	for (int i{ 0 }; i < 21; i++)
+	{
+		FBSGroup[i] = { { 140, 450, 185,185 } ,0 ,0 };
+		FBSGroup[i].updateChangeTime();
+	}
 }
 
 void FireBall::Move()
@@ -103,15 +176,42 @@ void FireBall::Move()
 	{
 		if (LifeTime < FireBallAttackTime * 5 - FireBallWaitTime + time)
 		{
-			dRect1.x = dRect1.x + Speed;
+			for (int i{ 0 }; i < 7; i++)
+			{
+				if (FBSGroup[i].boom == true)
+				{
+					continue;
+				}
+				FBSGroup[i].FireBallLocation.x += Speed;
+				Point C = rotatePoint({ 140,450 }, { (double)FBSGroup[i].FireBallLocation.x,450 }, (i - 1) * -15);
+				FBSGroup[i].FireBallLocation.y = C.y;
+			}
 		}
 		if (LifeTime < FireBallAttackTime * 4 - FireBallWaitTime + time)
 		{
-			dRect2.x = dRect2.x + Speed;
+			for (int i{ 7 }; i < 14; i++)
+			{
+				if (FBSGroup[i].boom == true)
+				{
+					continue;
+				}
+				FBSGroup[i].FireBallLocation.x += Speed;
+				Point C = rotatePoint({ 140,450 }, { (double)FBSGroup[i].FireBallLocation.x,450 }, (i - 8) * -15);
+				FBSGroup[i].FireBallLocation.y = C.y;
+			}
 		}
 		if (LifeTime < FireBallAttackTime * 3 - FireBallWaitTime + time)
 		{
-			dRect3.x = dRect3.x + Speed;
+			for (int i{ 14 }; i < 21; i++)
+			{
+				if (FBSGroup[i].boom == true)
+				{
+					continue;
+				}
+				FBSGroup[i].FireBallLocation.x += Speed;
+				Point C = rotatePoint({ 140,450 }, { (double)FBSGroup[i].FireBallLocation.x,450 }, (i - 15) * -15);
+				FBSGroup[i].FireBallLocation.y = C.y;
+			}
 		}
 	}
 }
