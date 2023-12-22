@@ -7,6 +7,7 @@
 #include <SDL_image.h>
 
 #include "Deleter.hpp"
+#include "Scenes.h"
 
 class Boss
 {

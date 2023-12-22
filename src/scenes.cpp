@@ -81,3 +81,13 @@ void Scenes::setKeyboard(bool left, bool right)
 		tileset_sliced_move += 4;
 	}
 }
+
+void Scenes::setBlack()
+{
+
+}
+
+void Scenes::setPillarHide()
+{
+
+}

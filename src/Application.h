@@ -9,7 +9,6 @@
 #include <stdlib.h>
 #include <crtdbg.h>
 
-#include "Scenes.h"
 #include "Player.h"
 #include "Boss.h"
 #include "FireBall.h"

@@ -12,6 +12,8 @@ public:
 	void RenderBackground();
 	void RenderForeground();
 	void setKeyboard(bool left, bool right);
+	void setBlack();
+	void setPillarHide();
 private:
 	SDL_Renderer* m_render;
 	int renderW{};
@@ -39,6 +41,5 @@ private:
 	int graveyardx{ -610 };
 	int graveyardy{ 330 };
 	int graveyard_move{};
-
 	//SDL_HasIntersection
 };
