@@ -117,7 +117,7 @@ void Application::update()
 	m_player->setKeyboard(k_left, k_right, k_J);
 	m_boss->update();
 	m_fireball->Update(m_boss.get());
-	m_firepillar->Update(m_scenes.)
+	m_firepillar->Update(m_scenes.get(), m_boss.get());
 }
 int a = 0;
 void Application::render()

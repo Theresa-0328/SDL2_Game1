@@ -67,6 +67,11 @@ void Boss::IdleProccess()
 {
 	current = idle;
 	cur_ptr = Idle_img;
+	if (FirePillarCd <= SDL_GetTicks())
+	{
+		m_boss_state = _FirePillar;
+		FirePillarCd = SDL_GetTicks() + 15000;
+	}
 	if (IdleTime <= SDL_GetTicks())
 	{
 		FireBallAttackTime = static_cast<uint64_t>(7200) + SDL_GetTicks();

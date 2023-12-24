@@ -71,4 +71,6 @@ private:
 	uint64_t DashSkillTime{};
 	uint64_t IdleTime{ 2500 + SDL_GetTicks() };
 	uint64_t FirePillarAttackTime{};
+
+	uint64_t FirePillarCd{ SDL_GetTicks() + 15000 };
 };

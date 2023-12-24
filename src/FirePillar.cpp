@@ -16,8 +16,9 @@ FirePillar::~FirePillar()
 
 void FirePillar::Start()
 {
-	LifeTime = SDL_GetTicks();
+	LifeTime = SDL_GetTicks() + 5000;
 	FirePillarCd = 20;
+	Speed = 10;
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	int lower_bound = 1;
@@ -31,8 +32,10 @@ void FirePillar::Start()
 
 void FirePillar::Render()
 {
-	int index{ 0 };
-
+	if (LifeTime <= SDL_GetTicks())
+	{
+		return;
+	}
 	for (int i = 0; i < 5; i++)
 	{
 		int r{ 0 };
@@ -48,16 +51,38 @@ void FirePillar::Render()
 
 	SDL_Rect rect2{ 19 * 2,0,19,16 };
 	SDL_Rect rect12{ 400,0,128,128 };
-	SDL_RenderCopyEx(m_render, FirePillar_move_img.get(), &rect2, &rect12, 0, nullptr, flip);
+	SDL_RenderCopyEx(m_render, FirePillar_move_img.get(), &rect2, &FBSGroup[0].Location, 270, nullptr, flip);
 }
 
-void FirePillar::Update(Scenes* s)
+void FirePillar::Update(Scenes* s, Boss* boss)
 {
-	s->setBlack();
-	s->setPillarHide();
+	if (boss->getBossStart() != Boss::BossState::_FirePillar)
+	{
+		return;
+	}
+	if (LifeTime <= SDL_GetTicks())
+	{
+		s->setBlack();
+		s->setPillarHide();
+		Start();
+	}
+	if (boss->getBossStart() == Boss::_Death)
+	{
+		LifeTime = 0;
+	}
+
 }
 
 void FirePillar::Move()
 {
-
+	for (auto& it : FBSGroup)
+	{
+		if (it.state == FirePillar::FirePillarState::State::move)
+		{
+			it.Location.x = 400;
+			it.Location.y += Speed;
+			it.Location.w = 128;
+			it.Location.h = 128;
+		}
+	}
 }

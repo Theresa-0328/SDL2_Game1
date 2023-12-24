@@ -134,15 +134,19 @@ void FireBall::Update(Boss* boss)
 bool FireBall::isExplosion(SDL_Rect rect2)
 {
 	SDL_Rect rect1{ 0, 700, 1280, 10 };
+
 	SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
 	SDL_RenderDrawRect(m_render, &rect1);
+
 	if (SDL_HasIntersection(&rect1, &rect2))
 	{
 		return true;
 	}
 	SDL_Rect player{ 640,480,100,100 };
+
 	SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
 	SDL_RenderDrawRect(m_render, &player);
+
 	if (SDL_HasIntersection(&player, &rect2))
 	{
 		return true;

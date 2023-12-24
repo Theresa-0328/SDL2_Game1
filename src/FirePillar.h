@@ -4,6 +4,7 @@
 #include <array>
 #include <iostream>
 
+#include "Boss.h"
 #include "Scenes.h"
 #include "Deleter.hpp"
 
@@ -14,7 +15,7 @@ public:
 	~FirePillar();
 	void Start();
 	void Render();
-	void Update(Scenes* s);
+	void Update(Scenes* s, Boss* boss);
 
 private:
 	SDL_Renderer* m_render;
@@ -33,4 +34,33 @@ private:
 	const std::array<int, 3> FirePillar_move_vec{ 0,1,2 };
 
 	void Move();
+
+	struct FirePillarState
+	{
+		SDL_Rect Location{};
+		enum State
+		{
+			move = 0,
+			explosion = 1,
+			end = 2
+		};
+		State state{ move };
+		int index;
+		int currentTime{};
+		int maxDuration{ 100 };
+		int ChangeTime{ (int)SDL_GetTicks() + maxDuration };
+		void updateIndex()
+		{
+			currentTime = SDL_GetTicks();
+			if (currentTime > ChangeTime)
+			{
+				ChangeTime = currentTime + maxDuration;
+				std::cout << index << "  " << currentTime << " " << ChangeTime << std::endl;
+				index++;
+			}
+		}
+	};
+
+	std::array<FirePillarState, 21> FBSGroup{};
+	int Speed{ 0 };
 };
