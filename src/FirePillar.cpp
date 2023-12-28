@@ -2,6 +2,7 @@
 
 #include <random>
 #include <string>
+#include <algorithm>
 
 FirePillar::FirePillar(SDL_Renderer* render) :
 	m_render(render),
@@ -20,15 +21,15 @@ void FirePillar::Start()
 	LifeTime = SDL_GetTicks() + 5000;
 	FirePillarCd = 20;
 	Speed = 10;
-	std::random_device rd;
-	std::mt19937 gen(rd());
-	int lower_bound = 1;
-	int upper_bound = 10;
-	std::uniform_int_distribution<int> distribution(lower_bound, upper_bound);
-	for (int i = 0; i < 5; i++)
-	{
-		int r = distribution(gen);
+
+	std::vector<int> numbers;
+	for (int i = 1; i <= 30; ++i) {
+		numbers.push_back(i);
 	}
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::shuffle(numbers.begin(), numbers.end(), g);
+	numbers.resize(5);
 
 	for (auto& it : FBSGroup)
 	{
