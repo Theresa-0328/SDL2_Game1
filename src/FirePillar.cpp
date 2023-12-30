@@ -23,20 +23,21 @@ void FirePillar::Start()
 	Speed = 10;
 
 	std::vector<int> numbers;
-	for (int i = 1; i <= 30; ++i) {
+	for (int i = 1; i <= 30; ++i)
+	{
 		numbers.push_back(i);
 	}
 	std::random_device rd;
 	std::mt19937 g(rd());
 	std::shuffle(numbers.begin(), numbers.end(), g);
-	numbers.resize(5);
+	numbers.resize(10);
 
-	for (auto& it : FBSGroup)
+	for (int i = 0; i < FBSGroup.size(); i++)
 	{
-		it.state = FirePillar::FirePillarState::State::move;
-		it.Location.x = 400;
-		it.Location.y = 0;
-		it.stop = false;
+		FBSGroup[i].state = FirePillar::FirePillarState::State::move;
+		FBSGroup[i].Location.x = 60 * numbers[i];
+		FBSGroup[i].Location.y = 0;
+		FBSGroup[i].stop = false;
 	}
 }
 
@@ -46,30 +47,29 @@ void FirePillar::Render()
 	{
 		return;
 	}
-	for (int i = 0; i < 5; i++)
-	{
-		int r{ 0 };
-	}
 	Move();
-	if (FBSGroup[0].stop == true)
-		return;
-	if (FBSGroup[0].state == FirePillar::FirePillarState::State::move)
+	for (int i = 0; i < FBSGroup.size(); i++)
 	{
-		SDL_Rect rect2{ 19 * FirePillar_move_vec[FBSGroup[0].index],0,19,16 };
-		SDL_RenderCopyEx(m_render, FirePillar_move_img.get(), &rect2, &FBSGroup[0].Location, 270, nullptr, flip);
-		FBSGroup[0].updateIndex();
-	}
-	if (FBSGroup[0].state == FirePillar::FirePillarState::State::explosion)
-	{
-		SDL_Rect rect1{ 128 * FirePillar_explosion_vec[FBSGroup[0].index],0,128,128 };
-		SDL_RenderCopyEx(m_render, FirePillar_explosion_img.get(), &rect1, &FBSGroup[0].Location, 0, nullptr, flip);
-		FBSGroup[0].updateIndex();
-	}
-	if (FBSGroup[0].state == FirePillar::FirePillarState::State::pillar)
-	{
-		SDL_Rect rect1{ 74 * FirePillar_vec[FBSGroup[0].index],0,74,160 };
-		SDL_RenderCopyEx(m_render, FirePillar_img.get(), &rect1, &FBSGroup[0].Location, 0, nullptr, flip);
-		FBSGroup[0].updateIndex();
+		if (FBSGroup[i].stop == true)
+			return;
+		if (FBSGroup[i].state == FirePillar::FirePillarState::State::move)
+		{
+			SDL_Rect rect2{ 19 * FirePillar_move_vec[FBSGroup[i].index],0,19,16 };
+			SDL_RenderCopyEx(m_render, FirePillar_move_img.get(), &rect2, &FBSGroup[i].Location, 270, nullptr, flip);
+			FBSGroup[i].updateIndex();
+		}
+		if (FBSGroup[i].state == FirePillar::FirePillarState::State::explosion)
+		{
+			SDL_Rect rect1{ 128 * FirePillar_explosion_vec[FBSGroup[i].index],0,128,128 };
+			SDL_RenderCopyEx(m_render, FirePillar_explosion_img.get(), &rect1, &FBSGroup[i].Location, 0, nullptr, flip);
+			FBSGroup[i].updateIndex();
+		}
+		if (FBSGroup[i].state == FirePillar::FirePillarState::State::pillar)
+		{
+			SDL_Rect rect1{ 74 * FirePillar_vec[FBSGroup[i].index],0,74,160 };
+			SDL_RenderCopyEx(m_render, FirePillar_img.get(), &rect1, &FBSGroup[i].Location, 0, nullptr, flip);
+			FBSGroup[i].updateIndex();
+		}
 	}
 }
 
