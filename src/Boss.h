@@ -12,7 +12,7 @@
 class Boss
 {
 public:
-	Boss(SDL_Renderer* render);
+	Boss(SDL_Renderer* render, Scenes* scenes);
 	~Boss();
 	void Render();
 	void update();
@@ -29,6 +29,7 @@ public:
 private:
 	bool isDead{ false };
 	SDL_Renderer* m_render;
+	Scenes* m_scenes;
 	int renderW{};
 	int renderH{};
 
@@ -71,6 +72,5 @@ private:
 	uint64_t DashSkillTime{};
 	uint64_t IdleTime{ 2500 + SDL_GetTicks() };
 	uint64_t FirePillarAttackTime{};
-
 	uint64_t FirePillarCd{ SDL_GetTicks() + 15000 };
 };

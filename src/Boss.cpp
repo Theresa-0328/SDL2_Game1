@@ -1,12 +1,13 @@
 ﻿#include "Boss.h"
 
-Boss::Boss(SDL_Renderer* render)
+Boss::Boss(SDL_Renderer* render, Scenes* scenes)
 	:m_render(render),
 	Idle_img(IMG_LoadTexture(m_render, "assets/Boss/Worm/Idle.png"), TextureDeleter),
 	Attack_img(IMG_LoadTexture(m_render, "assets/Boss/Worm/Attack.png"), TextureDeleter),
 	Death_img(IMG_LoadTexture(m_render, "assets/Boss/Worm/Death.png"), TextureDeleter),
 	Walk_img(IMG_LoadTexture(m_render, "assets/Boss/Worm/Walk.png"), TextureDeleter),
-	Get_Hit_img(IMG_LoadTexture(m_render, "assets/Boss/Worm/Get Hit.png"), TextureDeleter)
+	Get_Hit_img(IMG_LoadTexture(m_render, "assets/Boss/Worm/Get Hit.png"), TextureDeleter),
+	m_scenes(scenes)
 {
 }
 
@@ -67,32 +68,43 @@ void Boss::IdleProccess()
 {
 	current = idle;
 	cur_ptr = Idle_img;
+	if (IdleTime > SDL_GetTicks())
+	{
+		return;
+	}
 	if (FirePillarCd <= SDL_GetTicks())
 	{
 		m_boss_state = _FirePillar;
-		FirePillarCd = SDL_GetTicks() + 15000;
+		FirePillarCd = SDL_GetTicks() + static_cast<uint64_t>(15000);
+		FirePillarAttackTime = SDL_GetTicks() + static_cast<uint64_t>(8000);
+		m_scenes->setSkyState(true);
+		m_scenes->setPillarHide();
 	}
-	if (IdleTime <= SDL_GetTicks())
+	else
 	{
 		FireBallAttackTime = static_cast<uint64_t>(7200) + SDL_GetTicks();
 		m_boss_state = _FireBall;
-		index = 0;
 	}
+	index = 0;
 }
 
 void Boss::FireBallSkill()
 {
 	current = Attack;
 	cur_ptr = Attack_img;
-	if (FireBallAttackTime <= SDL_GetTicks() && !isDead)
+	if (FireBallAttackTime > SDL_GetTicks())
+	{
+		return;
+	}
+	if (isDead)
+	{
+		m_boss_state = _Death;
+	}
+	else
 	{
 		IdleTime = static_cast<uint64_t>(4800) + SDL_GetTicks();
 		m_boss_state = _Idle;
 		index = 0;
-	}
-	else if (isDead)
-	{
-		m_boss_state = _Death;
 	}
 }
 
@@ -100,16 +112,22 @@ void Boss::FirePillarSkill()
 {
 	current = Attack;
 	cur_ptr = Attack_img;
-	if (FirePillarAttackTime <= SDL_GetTicks() && !isDead)
+	if (FirePillarAttackTime > SDL_GetTicks())
+	{
+		return;
+	}
+	if (isDead)
+	{
+		m_boss_state = _Death;
+	}
+	else
 	{
 		IdleTime = static_cast<uint64_t>(4800) + SDL_GetTicks();
 		m_boss_state = _Idle;
 		index = 0;
 	}
-	else if (isDead)
-	{
-		m_boss_state = _Death;
-	}
+	m_scenes->setSkyState(false);
+	m_scenes->setPillarHide();
 }
 
 void Boss::DeathProccess()

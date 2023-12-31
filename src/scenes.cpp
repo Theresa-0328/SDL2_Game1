@@ -24,11 +24,10 @@ Scenes::~Scenes()
 
 void Scenes::RenderBackground()
 {
-	{
-		SDL_Rect sRect{ 0, 0, backgroundW, backgroundH };
-		SDL_Rect dRect{ backgroundx, backgroundy, renderW * 1.8, renderH * 1.8 };
-		SDL_RenderCopy(m_render, background.get(), &sRect, &dRect);
-	}
+
+	SDL_Rect sRect{ 0, 0, backgroundW, backgroundH };
+	SDL_Rect dRect{ backgroundx, backgroundy, renderW * 1.8, renderH * 1.8 };
+	SDL_RenderCopy(m_render, background.get(), &sRect, &dRect);
 
 	for (int i = -10; i < 10; i++)
 	{
@@ -82,9 +81,16 @@ void Scenes::setKeyboard(bool left, bool right)
 	}
 }
 
-void Scenes::setBlack()
+void Scenes::setSkyState(bool isblack)
 {
+	if (isblack)
+	{
 
+	}
+	else
+	{
+
+	}
 }
 
 void Scenes::setPillarHide()

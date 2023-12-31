@@ -12,7 +12,7 @@ public:
 	void RenderBackground();
 	void RenderForeground();
 	void setKeyboard(bool left, bool right);
-	void setBlack();
+	void setSkyState(bool isblack);
 	void setPillarHide();
 private:
 	SDL_Renderer* m_render;

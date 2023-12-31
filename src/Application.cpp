@@ -22,7 +22,7 @@ Application::Application() :
 	SDL_GetRendererOutputSize(m_render, &renderW, &renderH);
 	m_scenes = std::make_unique<Scenes>(m_render);
 	m_player = std::make_unique<Player>(m_render);
-	m_boss = std::make_unique<Boss>(m_render);
+	m_boss = std::make_unique<Boss>(m_render, m_scenes.get());
 	m_fireball = std::make_unique<FireBall>(m_render);
 	m_firepillar = std::make_unique<FirePillar>(m_render);
 }
@@ -117,7 +117,7 @@ void Application::update()
 	m_player->setKeyboard(k_left, k_right, k_J);
 	m_boss->update();
 	m_fireball->Update(m_boss.get());
-	m_firepillar->Update(m_scenes.get(), m_boss.get());
+	m_firepillar->Update(m_boss.get());
 }
 int a = 0;
 void Application::render()

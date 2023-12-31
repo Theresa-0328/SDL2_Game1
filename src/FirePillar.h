@@ -15,7 +15,7 @@ public:
 	~FirePillar();
 	void Start();
 	void Render();
-	void Update(Scenes* s, Boss* boss);
+	void Update(Boss* boss);
 
 private:
 	SDL_Renderer* m_render;
@@ -50,6 +50,15 @@ private:
 		int currentTime{};
 		int maxDuration{ 100 };
 		int ChangeTime{ (int)SDL_GetTicks() + maxDuration };
+
+		FirePillarState(SDL_Rect l, State s) :
+			Location(l),
+			state(s),
+			index(0),
+			vec_size(0)
+		{
+		}
+
 		void updateIndex()
 		{
 			currentTime = SDL_GetTicks();
@@ -65,7 +74,8 @@ private:
 			}
 		}
 	};
-
-	std::array<FirePillarState, 10> FBSGroup{};
+	std::vector<FirePillarState*> FBSGroup{};
 	int Speed{ 0 };
+	void addFirePillar(int num);
+	int waves{ 0 };
 };

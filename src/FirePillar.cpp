@@ -18,27 +18,11 @@ FirePillar::~FirePillar()
 
 void FirePillar::Start()
 {
-	LifeTime = SDL_GetTicks() + 5000;
+	LifeTime = SDL_GetTicks() + 8000;
 	FirePillarCd = 20;
 	Speed = 10;
-
-	std::vector<int> numbers;
-	for (int i = 1; i <= 30; ++i)
-	{
-		numbers.push_back(i);
-	}
-	std::random_device rd;
-	std::mt19937 g(rd());
-	std::shuffle(numbers.begin(), numbers.end(), g);
-	numbers.resize(10);
-
-	for (int i = 0; i < FBSGroup.size(); i++)
-	{
-		FBSGroup[i].state = FirePillar::FirePillarState::State::move;
-		FBSGroup[i].Location.x = 60 * numbers[i];
-		FBSGroup[i].Location.y = 0;
-		FBSGroup[i].stop = false;
-	}
+	addFirePillar(10);
+	waves = 1;
 }
 
 void FirePillar::Render()
@@ -50,83 +34,104 @@ void FirePillar::Render()
 	Move();
 	for (int i = 0; i < FBSGroup.size(); i++)
 	{
-		if (FBSGroup[i].stop == true)
-			return;
-		if (FBSGroup[i].state == FirePillar::FirePillarState::State::move)
+		if (FBSGroup[i]->state == FirePillar::FirePillarState::State::move)
 		{
-			SDL_Rect rect2{ 19 * FirePillar_move_vec[FBSGroup[i].index],0,19,16 };
-			SDL_RenderCopyEx(m_render, FirePillar_move_img.get(), &rect2, &FBSGroup[i].Location, 270, nullptr, flip);
-			FBSGroup[i].updateIndex();
+			SDL_Rect rect2{ 19 * FirePillar_move_vec[FBSGroup[i]->index],0,19,16 };
+			SDL_RenderCopyEx(m_render, FirePillar_move_img.get(), &rect2, &FBSGroup[i]->Location, 270, nullptr, flip);
 		}
-		if (FBSGroup[i].state == FirePillar::FirePillarState::State::explosion)
+		if (FBSGroup[i]->state == FirePillar::FirePillarState::State::explosion)
 		{
-			SDL_Rect rect1{ 128 * FirePillar_explosion_vec[FBSGroup[i].index],0,128,128 };
-			SDL_RenderCopyEx(m_render, FirePillar_explosion_img.get(), &rect1, &FBSGroup[i].Location, 0, nullptr, flip);
-			FBSGroup[i].updateIndex();
+			SDL_Rect rect1{ 128 * FirePillar_explosion_vec[FBSGroup[i]->index],0,128,128 };
+			SDL_RenderCopyEx(m_render, FirePillar_explosion_img.get(), &rect1, &FBSGroup[i]->Location, 0, nullptr, flip);
 		}
-		if (FBSGroup[i].state == FirePillar::FirePillarState::State::pillar)
+		if (FBSGroup[i]->state == FirePillar::FirePillarState::State::pillar)
 		{
-			SDL_Rect rect1{ 74 * FirePillar_vec[FBSGroup[i].index],0,74,160 };
-			SDL_RenderCopyEx(m_render, FirePillar_img.get(), &rect1, &FBSGroup[i].Location, 0, nullptr, flip);
-			FBSGroup[i].updateIndex();
+			SDL_Rect rect1{ 74 * FirePillar_vec[FBSGroup[i]->index],0,74,160 };
+			SDL_RenderCopyEx(m_render, FirePillar_img.get(), &rect1, &FBSGroup[i]->Location, 0, nullptr, flip);
 		}
+		FBSGroup[i]->updateIndex();
 	}
 }
 
-void FirePillar::Update(Scenes* s, Boss* boss)
+void FirePillar::Update(Boss* boss)
 {
+	if (boss->getBossStart() == Boss::_Death)
+	{
+		LifeTime = 0;
+		return;
+	}
 	if (boss->getBossStart() != Boss::BossState::_FirePillar)
 	{
 		return;
 	}
 	if (LifeTime <= SDL_GetTicks())
 	{
-		s->setBlack();
-		s->setPillarHide();
 		Start();
 	}
-	if (boss->getBossStart() == Boss::_Death)
+	if (LifeTime - 2000 < SDL_GetTicks() && waves == 1)
 	{
-		LifeTime = 0;
+		addFirePillar(10);
+		waves = 2;
 	}
-
 }
 
 void FirePillar::Move()
 {
-	for (auto& it : FBSGroup)
+	for (int i = 0; i < FBSGroup.size(); i++)
 	{
-		if (it.state == FirePillar::FirePillarState::State::move)
+		FirePillarState* Fp = FBSGroup[i];
+		if (Fp->state == FirePillar::FirePillarState::State::move)
 		{
-			it.Location.y += Speed;
-			it.Location.w = 128;
-			it.Location.h = 128;
-			it.vec_size = FirePillar_move_vec.size();
+			Fp->index = 0;
+			Fp->Location.y += Speed;
+			Fp->Location.w = 128;
+			Fp->Location.h = 128;
+			Fp->vec_size = FirePillar_move_vec.size();
 		}
-		if (it.state == FirePillar::FirePillarState::State::move && it.Location.y >= 400)
+		if (Fp->state == FirePillar::FirePillarState::State::move && Fp->Location.y >= 400)
 		{
-			it.state = FirePillar::FirePillarState::State::explosion;
-			it.index = 0;
-			it.Location.w = 200;
-			it.Location.h = 200;
-			it.vec_size = FirePillar_explosion_vec.size();
-			it.maxDuration = 100;
-			it.lifeTime = SDL_GetTicks() + 600;
+			Fp->state = FirePillar::FirePillarState::State::explosion;
+			Fp->index = 0;
+			Fp->Location.w = 200;
+			Fp->Location.h = 200;
+			Fp->vec_size = FirePillar_explosion_vec.size();
+			Fp->maxDuration = 100;
+			Fp->lifeTime = SDL_GetTicks() + 600;
 		}
-		if (it.state == FirePillar::FirePillarState::State::explosion && it.lifeTime <= SDL_GetTicks())
+		if (Fp->state == FirePillar::FirePillarState::State::explosion && Fp->lifeTime <= SDL_GetTicks())
 		{
-			it.state = FirePillar::FirePillarState::State::pillar;
-			it.index = 0;
-			it.Location.w = 148;
-			it.Location.h = 320;
-			it.vec_size = FirePillar_vec.size();
-			it.maxDuration = 200;
-			it.lifeTime = SDL_GetTicks() + 600;
+			Fp->state = FirePillar::FirePillarState::State::pillar;
+			Fp->index = 0;
+			Fp->Location.y = 0;
+			Fp->Location.w = 300;
+			Fp->Location.h = 640;
+			Fp->vec_size = FirePillar_vec.size();
+			Fp->maxDuration = 200;
+			Fp->lifeTime = SDL_GetTicks() + 2000;
 		}
-		if (it.state == FirePillar::FirePillarState::State::pillar && it.lifeTime <= SDL_GetTicks())
+		if (FBSGroup[i]->state == FirePillar::FirePillarState::State::pillar && FBSGroup[i]->lifeTime <= SDL_GetTicks())
 		{
-			it.index = 0;
-			it.stop = true;
+			std::swap(FBSGroup[i], FBSGroup.back());
+			FBSGroup.pop_back();
+			delete Fp;
 		}
+	}
+}
+
+void FirePillar::addFirePillar(int num)
+{
+	std::vector<int> numbers;
+	for (int i = 1; i <= 30; ++i)
+	{
+		numbers.push_back(i);
+	}
+	std::random_device rd;
+	std::mt19937 g(rd());
+	std::shuffle(numbers.begin(), numbers.end(), g);
+	numbers.resize(num);
+	for (int i = 0; i < num; i++)
+	{
+		SDL_Rect Location{ 70 * numbers[i] ,0,0,0 };
+		FBSGroup.push_back(new FirePillarState(Location, FirePillar::FirePillarState::State::move));
 	}
 }
