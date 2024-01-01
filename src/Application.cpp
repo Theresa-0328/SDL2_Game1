@@ -125,6 +125,7 @@ bool Application::ProcessMessage()
 
 void Application::init()
 {
+	m_fireball->Init(m_boss.get());
 }
 
 void Application::update()
@@ -132,8 +133,10 @@ void Application::update()
 	m_scenes->setKeyboard(k_left, k_right);
 	m_player->setKeyboard(k_left, k_right, k_J);
 	m_boss->setKeyboard(k_left, k_right);
+	m_fireball->setKeyboard(k_left, k_right);
+
 	m_boss->update();
-	m_fireball->Update(m_boss.get());
+	m_fireball->Update();
 	m_firepillar->Update(m_boss.get());
 }
 int a = 0;

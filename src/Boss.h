@@ -27,6 +27,8 @@ public:
 	};
 	BossState getBossStart();
 	void setKeyboard(bool left, bool right);
+	SDL_Rect bossLocation{ 0, 380, 360, 360 };
+	int index = 0;
 private:
 	bool isDead{ false };
 	SDL_Renderer* m_render;
@@ -35,7 +37,6 @@ private:
 	int renderH{};
 
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
-	int index = 0;
 	int maxDuration = 150;
 	int currentTime = SDL_GetTicks();
 	int ChangeTime = currentTime + maxDuration;
@@ -74,8 +75,6 @@ private:
 	uint64_t IdleTime{ 2500 + SDL_GetTicks() };
 	uint64_t FirePillarAttackTime{};
 	uint64_t FirePillarCd{ SDL_GetTicks() + 15000 };
-
-	SDL_Rect bossLocation = { 0, 380, 360, 360 };
 
 	void leftShiftBoss();
 	void rightShiftBoss();

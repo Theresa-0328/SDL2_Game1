@@ -12,9 +12,11 @@ class FireBall
 public:
 	FireBall(SDL_Renderer* render);
 	~FireBall();
+	void Init(Boss* boss);
 	void Render();
-	void Update(Boss* boss);
+	void Update();
 	void Start();
+	void setKeyboard(bool left, bool right);
 private:
 	SDL_Renderer* m_render;
 
@@ -33,18 +35,24 @@ private:
 	int LifeTime{};
 
 	void Move();
-	bool isExplosion(SDL_Rect rect2);
-
-	bool bossDead;
+	void isExplosion();
 
 	struct FireBallState
 	{
+		FireBallState(SDL_Rect rect, int angle) :
+			FireBallLocation(rect),
+			m_angle(angle),
+			InitLocation(rect)
+		{
+		}
 		SDL_Rect FireBallLocation{};
+		SDL_Rect InitLocation{};
 		bool boom{ false };
 		int index{};
 		int currentTime{};
 		int maxDuration{ 100 };
 		int ChangeTime{ (int)SDL_GetTicks() + maxDuration };
+		int m_angle{};
 		void updateIndex()
 		{
 			currentTime = SDL_GetTicks();
@@ -56,11 +64,18 @@ private:
 			}
 		}
 	};
-	std::array<FireBallState, 21> FBSGroup{};
+	std::vector<FireBallState> FBSGroup{};
 
 	static constexpr int FireBallAttackTime{ 2400 };
 	static constexpr int FireBallWaitTime{ 1300 };
 
 	std::shared_ptr<SDL_Texture> Explosion_img;
 	const std::vector<int> Explosion{ 0, 0, 1, 2, 3, 4, 5 ,6 };
+
+	void leftShiftFireBall();
+	void rightShiftFireBall();
+
+	Boss* m_boss;
+	void addFireBall(int num = 7);
+	int waves{ 0 };
 };

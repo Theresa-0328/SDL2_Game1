@@ -21,9 +21,9 @@ Point rotatePoint(const Point& A, const Point& B, double angle) {
 
 FireBall::FireBall(SDL_Renderer* render) :
 	m_render(render),
-	bossDead(false),
 	FireBall_move_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Ball/Move.png"), TextureDeleter),
-	Explosion_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Ball/Explosion.png"), TextureDeleter)
+	Explosion_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Ball/Explosion.png"), TextureDeleter),
+	m_boss(nullptr)
 {
 
 }
@@ -33,89 +33,36 @@ FireBall::~FireBall()
 
 }
 
+void FireBall::Init(Boss* boss)
+{
+	m_boss = boss;
+}
+
 void FireBall::Render()
 {
-	if (LifeTime <= SDL_GetTicks() || bossDead)
+	if (LifeTime <= SDL_GetTicks())
 	{
 		return;
 	}
-	for (int i{ 0 }; i < 21; i++)
-	{
-		FBSGroup[i].boom = isExplosion(FBSGroup[i].FireBallLocation);
-	}
 	Move();
-	SDL_Rect sRect = { FireBall_move_vec[index] * 46, 0, 46,46 };
-	if (LifeTime < FireBallAttackTime * 5 - FireBallWaitTime + SDL_GetTicks())
+	isExplosion();
+	for (int i{ 0 }; i < FBSGroup.size(); i++)
 	{
-		for (int i{ 0 }; i < 7; i++)
+		if (FBSGroup[i].boom)
 		{
-			if (FBSGroup[i].index > 7)
-			{
-				continue;
-			}
-			if (FBSGroup[i].boom == true)
-			{
-
-#ifdef SHOW_Rect
-				SDL_SetRenderDrawColor(m_render, 0, 0, 255, 0xFF);
-				SDL_RenderDrawRect(m_render, &FBSGroup[i].FireBallLocation);
-#endif
-
-				SDL_Rect sRect = { Explosion[FBSGroup[i].index] * 46, 0, 46,46 };
-				SDL_RenderCopyEx(m_render, Explosion_img.get(), &sRect, &FBSGroup[i].FireBallLocation, 0, nullptr, flip);
-				FBSGroup[i].updateIndex();
-				continue;
-			}
-			SDL_RenderCopyEx(m_render, FireBall_move_img.get(), &sRect, &FBSGroup[i].FireBallLocation, (i - 1) * -15, nullptr, flip);
-			//std::cout << i << " x " << dRect1.x << " y " << dRect1.y << std::endl;
+			SDL_Rect sRect = { Explosion[FBSGroup[i].index] * 46, 0, 46,46 };
+			SDL_RenderCopyEx(m_render, Explosion_img.get(), &sRect, &FBSGroup[i].FireBallLocation, 0, nullptr, flip);
+			FBSGroup[i].updateIndex();
 		}
-	}
-	if (LifeTime < FireBallAttackTime * 4 - FireBallWaitTime + SDL_GetTicks())
-	{
-		for (int i{ 7 }; i < 14; i++)
+		else
 		{
-			if (FBSGroup[i].index > 7)
-			{
-				continue;
-			}
-			if (FBSGroup[i].boom == true)
-			{
-
-#ifdef SHOW_Rect
-				SDL_SetRenderDrawColor(m_render, 0, 0, 255, 0xFF);
-				SDL_RenderDrawRect(m_render, &FBSGroup[i].FireBallLocation);
-#endif
-				SDL_Rect sRect = { Explosion[FBSGroup[i].index] * 46, 0, 46,46 };
-				SDL_RenderCopyEx(m_render, Explosion_img.get(), &sRect, &FBSGroup[i].FireBallLocation, 0, nullptr, flip);
-				FBSGroup[i].updateIndex();
-				continue;
-			}
-			SDL_RenderCopyEx(m_render, FireBall_move_img.get(), &sRect, &FBSGroup[i].FireBallLocation, (i - 8) * -15, nullptr, flip);
+			SDL_Rect sRect = { FireBall_move_vec[index] * 46, 0, 46,46 };
+			SDL_RenderCopyEx(m_render, FireBall_move_img.get(), &sRect, &FBSGroup[i].FireBallLocation, FBSGroup[i].m_angle, nullptr, flip);
 		}
-	}
-	if (LifeTime < FireBallAttackTime * 3 - FireBallWaitTime + SDL_GetTicks())
-	{
-		for (int i{ 14 }; i < 21; i++)
-		{
-			if (FBSGroup[i].index > 7)
-			{
-				continue;
-			}
-			if (FBSGroup[i].boom == true)
-			{
-
 #ifdef SHOW_Rect
-				SDL_SetRenderDrawColor(m_render, 0, 0, 255, 0xFF);
-				SDL_RenderDrawRect(m_render, &FBSGroup[i].FireBallLocation);
+		SDL_SetRenderDrawColor(m_render, 0, 0, 255, 0xFF);
+		SDL_RenderDrawRect(m_render, &FBSGroup[i].FireBallLocation);
 #endif
-
-				SDL_Rect sRect = { Explosion[FBSGroup[i].index] * 46, 0, 46,46 };
-				SDL_RenderCopyEx(m_render, Explosion_img.get(), &sRect, &FBSGroup[i].FireBallLocation, 0, nullptr, flip);
-				FBSGroup[i].updateIndex();
-				continue;
-			}
-			SDL_RenderCopyEx(m_render, FireBall_move_img.get(), &sRect, &FBSGroup[i].FireBallLocation, (i - 15) * -15, nullptr, flip);
-		}
 	}
 	currentTime = SDL_GetTicks();
 	if (currentTime > ChangeTime)
@@ -129,29 +76,83 @@ void FireBall::Render()
 	}
 }
 
-void FireBall::Update(Boss* boss)
+void FireBall::Update()
 {
-	if (boss->getBossStart() == Boss::_FireBall && LifeTime <= SDL_GetTicks())
+	if (m_boss->getBossStart() == Boss::_Death)
+	{
+		LifeTime = 0;
+		return;
+	}
+	if (m_boss->getBossStart() != Boss::_FireBall)
+	{
+		return;
+	}
+	if (LifeTime <= SDL_GetTicks())
 	{
 		Start();
 	}
-	if (boss->getBossStart() == Boss::_Death)
+	if (LifeTime <= SDL_GetTicks() - FireBallWaitTime + FireBallAttackTime * 5 && waves == 0)
 	{
-		LifeTime = 0;
+		addFireBall();
+		waves = 1;
+	}
+	if (LifeTime <= SDL_GetTicks() - FireBallWaitTime + FireBallAttackTime * 4 && waves == 1)
+	{
+		addFireBall();
+		waves = 2;
+	}
+	if (LifeTime <= SDL_GetTicks() - FireBallWaitTime + FireBallAttackTime * 3 && waves == 2)
+	{
+		addFireBall();
+		waves = 3;
+	}
+	//std::cout << "FireBall::Update" << LifeTime << " " << SDL_GetTicks() - FireBallWaitTime + FireBallAttackTime * 5 << std::endl;
+}
+
+void FireBall::isExplosion()
+{
+	for (auto& it : FBSGroup)
+	{
+		if (it.boom)
+		{
+			continue;
+		}
+		if (SDL_HasIntersection(&GroundCollision, &it.FireBallLocation))
+		{
+			it.boom = true;
+			it.index = 0;
+		}
+		if (SDL_HasIntersection(&PlayerCollision, &it.FireBallLocation))
+		{
+			it.boom = true;
+			it.index = 0;
+		}
 	}
 }
 
-bool FireBall::isExplosion(SDL_Rect rect2)
+void FireBall::leftShiftFireBall()
 {
-	if (SDL_HasIntersection(&GroundCollision, &rect2))
+	for (auto& it : FBSGroup)
 	{
-		return true;
+		it.FireBallLocation.x += 4;
 	}
-	if (SDL_HasIntersection(&PlayerCollision, &rect2))
+}
+
+void FireBall::rightShiftFireBall()
+{
+	for (auto& it : FBSGroup)
 	{
-		return true;
+		it.FireBallLocation.x -= 4;
 	}
-	return false;
+}
+
+void FireBall::addFireBall(int num)
+{
+	for (int i{ 0 }; i < 7; i++)
+	{
+		//SDL_RendererFlip
+		FBSGroup.push_back({ { m_boss->bossLocation.x + m_boss->bossLocation.w, m_boss->bossLocation.y, 185,185 } ,(i - 1) * -15 });
+	}
 }
 
 void FireBall::Start()
@@ -159,14 +160,36 @@ void FireBall::Start()
 	Speed = 7;
 	Damage = 8;
 	LifeTime = FireBallAttackTime * 5 + SDL_GetTicks();
-	for (int i{ 0 }; i < 21; i++)
+	FBSGroup.clear();
+	waves = 0;
+}
+
+void FireBall::setKeyboard(bool left, bool right)
+{
+	if (left)
 	{
-		FBSGroup[i] = { { 140, 450, 185,185 } ,0 ,0 };
+		leftShiftFireBall();
+	}
+	if (right)
+	{
+		rightShiftFireBall();
 	}
 }
 
 void FireBall::Move()
 {
+	for (int i{ 0 }; i < FBSGroup.size(); i++)
+	{
+		if (FBSGroup[i].index >= 8)
+		{
+			std::swap(FBSGroup[i], FBSGroup.back());
+			FBSGroup.pop_back();
+			i--;
+		}
+		if (i < 0)
+			continue;
+		//std::cout << "FBSGroup.pop_back();  " << i << " " << FBSGroup[i].index << std::endl;
+	}
 	uint32_t time = SDL_GetTicks();
 	if (flip)
 	{
@@ -174,44 +197,15 @@ void FireBall::Move()
 	}
 	else
 	{
-		if (LifeTime < FireBallAttackTime * 5 - FireBallWaitTime + time)
+		for (int i{ 0 }; i < FBSGroup.size(); i++)
 		{
-			for (int i{ 0 }; i < 7; i++)
+			if (FBSGroup[i].boom)
 			{
-				if (FBSGroup[i].boom == true)
-				{
-					continue;
-				}
-				FBSGroup[i].FireBallLocation.x += Speed;
-				Point C = rotatePoint({ 140,450 }, { (double)FBSGroup[i].FireBallLocation.x,450 }, (i - 1) * -15);
-				FBSGroup[i].FireBallLocation.y = C.y;
+				continue;
 			}
-		}
-		if (LifeTime < FireBallAttackTime * 4 - FireBallWaitTime + time)
-		{
-			for (int i{ 7 }; i < 14; i++)
-			{
-				if (FBSGroup[i].boom == true)
-				{
-					continue;
-				}
-				FBSGroup[i].FireBallLocation.x += Speed;
-				Point C = rotatePoint({ 140,450 }, { (double)FBSGroup[i].FireBallLocation.x,450 }, (i - 8) * -15);
-				FBSGroup[i].FireBallLocation.y = C.y;
-			}
-		}
-		if (LifeTime < FireBallAttackTime * 3 - FireBallWaitTime + time)
-		{
-			for (int i{ 14 }; i < 21; i++)
-			{
-				if (FBSGroup[i].boom == true)
-				{
-					continue;
-				}
-				FBSGroup[i].FireBallLocation.x += Speed;
-				Point C = rotatePoint({ 140,450 }, { (double)FBSGroup[i].FireBallLocation.x,450 }, (i - 15) * -15);
-				FBSGroup[i].FireBallLocation.y = C.y;
-			}
+			FBSGroup[i].FireBallLocation.x += Speed;
+			Point C = rotatePoint({ (double)FBSGroup[i].InitLocation.x,(double)FBSGroup[i].InitLocation.y }, { (double)FBSGroup[i].FireBallLocation.x,450 }, FBSGroup[i].m_angle);
+			FBSGroup[i].FireBallLocation.y = C.y;
 		}
 	}
 }

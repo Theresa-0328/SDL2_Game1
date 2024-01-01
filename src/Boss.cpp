@@ -19,6 +19,12 @@ void Boss::Render()
 {
 	SDL_Rect sRect = { current[index] * 90, 0, 90,90 };
 	SDL_RenderCopyEx(m_render, cur_ptr.get(), &sRect, &bossLocation, 0, nullptr, flip);
+
+#ifdef SHOW_Rect
+	SDL_SetRenderDrawColor(m_render, 0, 0, 255, 0xFF);
+	SDL_RenderDrawRect(m_render, &bossLocation);
+#endif
+
 	currentTime = SDL_GetTicks();
 	if (currentTime > ChangeTime)
 	{
