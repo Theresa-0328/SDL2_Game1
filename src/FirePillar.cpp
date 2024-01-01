@@ -21,7 +21,7 @@ void FirePillar::Start()
 	LifeTime = SDL_GetTicks() + 8000;
 	FirePillarCd = 20;
 	Speed = 10;
-	addFirePillar(10);
+	addFirePillar();
 	waves = 1;
 }
 
@@ -70,7 +70,7 @@ void FirePillar::Update(Boss* boss)
 	}
 	if (LifeTime - 2000 < SDL_GetTicks() && waves == 1)
 	{
-		addFirePillar(10);
+		addFirePillar();
 		waves = 2;
 	}
 }
@@ -133,5 +133,33 @@ void FirePillar::addFirePillar(int num)
 	{
 		SDL_Rect Location{ 70 * numbers[i] ,0,0,0 };
 		FBSGroup.push_back(new FirePillarState(Location, FirePillar::FirePillarState::State::move));
+	}
+}
+
+void FirePillar::setKeyboard(bool left, bool right)
+{
+	if (left)
+	{
+		leftShiftFirePillar();
+	}
+	if (right)
+	{
+		rightShiftFirePillar();
+	}
+}
+
+void FirePillar::leftShiftFirePillar()
+{
+	for (auto& it : FBSGroup)
+	{
+		it->Location.x += 4;
+	}
+}
+
+void FirePillar::rightShiftFirePillar()
+{
+	for (auto& it : FBSGroup)
+	{
+		it->Location.x -= 4;
 	}
 }

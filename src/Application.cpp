@@ -134,6 +134,7 @@ void Application::update()
 	m_player->setKeyboard(k_left, k_right, k_J);
 	m_boss->setKeyboard(k_left, k_right);
 	m_fireball->setKeyboard(k_left, k_right);
+	m_firepillar->setKeyboard(k_left, k_right);
 
 	m_boss->update();
 	m_fireball->Update();

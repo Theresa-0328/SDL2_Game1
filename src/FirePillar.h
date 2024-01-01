@@ -16,7 +16,7 @@ public:
 	void Start();
 	void Render();
 	void Update(Boss* boss);
-
+	void setKeyboard(bool left, bool right);
 private:
 	SDL_Renderer* m_render;
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
@@ -76,6 +76,9 @@ private:
 	};
 	std::vector<FirePillarState*> FBSGroup{};
 	int Speed{ 0 };
-	void addFirePillar(int num);
+	void addFirePillar(int num = 8);
 	int waves{ 0 };
+
+	void leftShiftFirePillar();
+	void rightShiftFirePillar();
 };
