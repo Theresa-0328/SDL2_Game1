@@ -1,5 +1,7 @@
 #include "Player.h"
 
+#include "Global.hpp"
+
 Player::Player(SDL_Renderer* render)
 	:m_render(render),
 	player2(IMG_LoadTexture(render, "assets/player/player2.png"))
@@ -32,6 +34,12 @@ void Player::task()
 			//current = idle2;
 		}
 	}
+
+#ifdef SHOW_Rect
+	SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
+	SDL_RenderDrawRect(m_render, &PlayerCollision);
+#endif // SHOW_Rect
+
 }
 
 void Player::setKeyboard(bool left, bool right, bool J)

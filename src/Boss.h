@@ -26,6 +26,7 @@ public:
 		_Death,
 	};
 	BossState getBossStart();
+	void setKeyboard(bool left, bool right);
 private:
 	bool isDead{ false };
 	SDL_Renderer* m_render;
@@ -73,4 +74,9 @@ private:
 	uint64_t IdleTime{ 2500 + SDL_GetTicks() };
 	uint64_t FirePillarAttackTime{};
 	uint64_t FirePillarCd{ SDL_GetTicks() + 15000 };
+
+	SDL_Rect bossLocation = { 0, 380, 360, 360 };
+
+	void leftShiftBoss();
+	void rightShiftBoss();
 };

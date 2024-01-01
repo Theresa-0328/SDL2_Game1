@@ -18,8 +18,7 @@ Boss::~Boss()
 void Boss::Render()
 {
 	SDL_Rect sRect = { current[index] * 90, 0, 90,90 };
-	SDL_Rect dRect = { 0, 380, 360, 360 };
-	SDL_RenderCopyEx(m_render, cur_ptr.get(), &sRect, &dRect, 0, nullptr, flip);
+	SDL_RenderCopyEx(m_render, cur_ptr.get(), &sRect, &bossLocation, 0, nullptr, flip);
 	currentTime = SDL_GetTicks();
 	if (currentTime > ChangeTime)
 	{
@@ -130,6 +129,16 @@ void Boss::FirePillarSkill()
 	m_scenes->setPillarHide();
 }
 
+void Boss::leftShiftBoss()
+{
+	bossLocation.x += 4;
+}
+
+void Boss::rightShiftBoss()
+{
+	bossLocation.x -= 4;
+}
+
 void Boss::DeathProccess()
 {
 	current = Death;
@@ -157,4 +166,16 @@ void Boss::BeHitProccess()
 Boss::BossState Boss::getBossStart()
 {
 	return m_boss_state;
+}
+
+void Boss::setKeyboard(bool left, bool right)
+{
+	if (left)
+	{
+		leftShiftBoss();
+	}
+	if (right)
+	{
+		rightShiftBoss();
+	}
 }

@@ -50,4 +50,6 @@ private:
 
 	void SetBlackSkyAlpha();
 	int BlackSkyAlpha{ 0 };
+	void leftShiftScene();
+	void rightShiftScene();
 };

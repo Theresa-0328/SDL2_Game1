@@ -1,5 +1,7 @@
 ﻿#include "Scenes.h"
 
+#include "Global.hpp"
+
 Scenes::Scenes(SDL_Renderer* render)
 	:m_render(render),
 	background(IMG_LoadTexture(m_render, "assets/scenes/background.png")),
@@ -67,30 +69,46 @@ void Scenes::RenderForeground()
 		SDL_Rect dRect{ tileset_slicedY, tileset_slicedy, 64 * 3, 41 * 3 };
 		SDL_RenderCopy(m_render, tileset_sliced, &sRect, &dRect);
 	}
+
+#ifdef SHOW_Rect
+	SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
+	SDL_RenderDrawRect(m_render, &GroundCollision);
+#endif // SHOW_Rect
+
 }
 
 void Scenes::setKeyboard(bool left, bool right)
 {
 	if (left)
 	{
-		if (backgroundx < -10)
-		{
-			backgroundx += 1;
-		}
-		mountains_move -= 2;
-		graveyard_move -= 3;
-		tileset_sliced_move -= 4;
+		leftShiftScene();
 	}
 	if (right)
 	{
-		if (backgroundx > -885)
-		{
-			backgroundx -= 1;
-		}
-		mountains_move += 2;
-		graveyard_move += 3;
-		tileset_sliced_move += 4;
+		rightShiftScene();
 	}
+}
+
+void Scenes::leftShiftScene()
+{
+	if (backgroundx < -10)
+	{
+		backgroundx += 1;
+	}
+	mountains_move -= 2;
+	graveyard_move -= 3;
+	tileset_sliced_move -= 4;
+}
+
+void Scenes::rightShiftScene()
+{
+	if (backgroundx > -885)
+	{
+		backgroundx -= 1;
+	}
+	mountains_move += 2;
+	graveyard_move += 3;
+	tileset_sliced_move += 4;
 }
 
 void Scenes::setSkyState(bool isblack)
