@@ -19,9 +19,14 @@ private:
 	int renderW{};
 	int renderH{};
 
-	std::unique_ptr<SDL_Texture, decltype(&TextureDeleter)> background;
+	bool isblack;
+	bool Grad{ false };
+
+	SDL_Texture* blackSky{};
+	SDL_Texture* background;
 	int backgroundW{};
 	int backgroundH{};
+
 	SDL_Texture* graveyard;
 	int graveyardW{};
 	int graveyardH{};
@@ -42,4 +47,7 @@ private:
 	int graveyardy{ 330 };
 	int graveyard_move{};
 	//SDL_HasIntersection
+
+	void SetBlackSkyAlpha();
+	int BlackSkyAlpha{ 0 };
 };
