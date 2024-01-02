@@ -16,10 +16,14 @@ FirePillar::~FirePillar()
 {
 }
 
+void FirePillar::Init(Boss* boss)
+{
+	m_boss = boss;
+}
+
 void FirePillar::Start()
 {
-	LifeTime = SDL_GetTicks() + 8000;
-	FirePillarCd = 20;
+	LifeTime = SDL_GetTicks() + 10000;
 	Speed = 10;
 	addFirePillar();
 	waves = 1;
@@ -68,10 +72,20 @@ void FirePillar::Update(Boss* boss)
 	{
 		Start();
 	}
-	if (LifeTime - 2000 < SDL_GetTicks() && waves == 1)
+	if (LifeTime - 7500 < SDL_GetTicks() && waves == 1)
 	{
 		addFirePillar();
 		waves = 2;
+	}
+	if (LifeTime - 5000 < SDL_GetTicks() && waves == 2)
+	{
+		addFirePillar();
+		waves = 3;
+	}
+	if (LifeTime - 2500 < SDL_GetTicks() && waves == 3)
+	{
+		addFirePillar();
+		waves = 4;
 	}
 }
 
@@ -92,8 +106,10 @@ void FirePillar::Move()
 		{
 			Fp->state = FirePillar::FirePillarState::State::explosion;
 			Fp->index = 0;
-			Fp->Location.w = 200;
-			Fp->Location.h = 200;
+			Fp->Location.x -= 100;
+			Fp->Location.y = 210;
+			Fp->Location.w = 380;
+			Fp->Location.h = 450;
 			Fp->vec_size = FirePillar_explosion_vec.size();
 			Fp->maxDuration = 100;
 			Fp->lifeTime = SDL_GetTicks() + 600;
@@ -102,12 +118,13 @@ void FirePillar::Move()
 		{
 			Fp->state = FirePillar::FirePillarState::State::pillar;
 			Fp->index = 0;
+			Fp->Location.x += 40;
 			Fp->Location.y = 0;
 			Fp->Location.w = 300;
-			Fp->Location.h = 640;
+			Fp->Location.h = 650;
 			Fp->vec_size = FirePillar_vec.size();
 			Fp->maxDuration = 200;
-			Fp->lifeTime = SDL_GetTicks() + 2000;
+			Fp->lifeTime = SDL_GetTicks() + 1200;
 		}
 		if (FBSGroup[i]->state == FirePillar::FirePillarState::State::pillar && FBSGroup[i]->lifeTime <= SDL_GetTicks())
 		{
@@ -121,7 +138,7 @@ void FirePillar::Move()
 void FirePillar::addFirePillar(int num)
 {
 	std::vector<int> numbers;
-	for (int i = 1; i <= 30; ++i)
+	for (int i{ -15 }; i <= 15; ++i)
 	{
 		numbers.push_back(i);
 	}
@@ -131,7 +148,7 @@ void FirePillar::addFirePillar(int num)
 	numbers.resize(num);
 	for (int i = 0; i < num; i++)
 	{
-		SDL_Rect Location{ 70 * numbers[i] ,0,0,0 };
+		SDL_Rect Location{ 100 * numbers[i] ,0,0,0 };
 		FBSGroup.push_back(new FirePillarState(Location, FirePillar::FirePillarState::State::move));
 	}
 }

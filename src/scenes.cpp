@@ -64,9 +64,9 @@ void Scenes::RenderForeground()
 {
 	for (int i = -30; i < 30; i++)
 	{
-		int tileset_slicedY = 180 * i - tileset_sliced_move;
+		int tileset_slicedX = 180 * i - tileset_sliced_move;
 		SDL_Rect sRect{ 64, 55, 64, 41 };
-		SDL_Rect dRect{ tileset_slicedY, tileset_slicedy, 64 * 3, 41 * 3 };
+		SDL_Rect dRect{ tileset_slicedX, tileset_slicedy, sRect.x * 3, sRect.y * 3 };
 		SDL_RenderCopy(m_render, tileset_sliced, &sRect, &dRect);
 	}
 

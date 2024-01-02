@@ -151,7 +151,7 @@ void FireBall::addFireBall(int num)
 	for (int i{ 0 }; i < 7; i++)
 	{
 		//SDL_RendererFlip
-		FBSGroup.push_back({ { m_boss->bossLocation.x + m_boss->bossLocation.w, m_boss->bossLocation.y, 185,185 } ,(i - 1) * -15 });
+		FBSGroup.push_back({ { m_boss->bossLocation.x + 225, 430, 185,185 } ,(i - 1) * -15 });
 	}
 }
 

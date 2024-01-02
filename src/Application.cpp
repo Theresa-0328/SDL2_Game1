@@ -126,6 +126,7 @@ bool Application::ProcessMessage()
 void Application::init()
 {
 	m_fireball->Init(m_boss.get());
+	m_firepillar->Init(m_boss.get());
 }
 
 void Application::update()

@@ -5,9 +5,12 @@
 #include <chrono>
 #include <thread>
 
-#include <Windows.h>
 #include <stdlib.h>
 #include <crtdbg.h>
+
+#ifdef _WIN32
+#include <Windows.h>
+#endif // WIN32
 
 #include "Player.h"
 #include "Boss.h"

@@ -27,7 +27,8 @@ public:
 	};
 	BossState getBossStart();
 	void setKeyboard(bool left, bool right);
-	SDL_Rect bossLocation{ 0, 380, 360, 360 };
+
+	SDL_Rect bossLocation{ 0, 360, 400, 400 };
 	int index = 0;
 private:
 	bool isDead{ false };
@@ -70,10 +71,10 @@ private:
 	void BeHitProccess();
 	void FirePillarSkill();
 
+	uint64_t FirePillarAttackTime{};
 	uint64_t FireBallAttackTime{};
 	uint64_t DashSkillTime{};
 	uint64_t IdleTime{ 2500 + SDL_GetTicks() };
-	uint64_t FirePillarAttackTime{};
 	uint64_t FirePillarCd{ SDL_GetTicks() + 15000 };
 
 	void leftShiftBoss();

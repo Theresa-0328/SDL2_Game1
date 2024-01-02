@@ -13,6 +13,7 @@ class FirePillar
 public:
 	FirePillar(SDL_Renderer* render);
 	~FirePillar();
+	void Init(Boss* boss);
 	void Start();
 	void Render();
 	void Update(Boss* boss);
@@ -22,7 +23,6 @@ private:
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 
 	int LifeTime{};
-	int FirePillarCd{};
 
 	std::shared_ptr<SDL_Texture> FirePillar_move_img;
 	const std::array<int, 3> FirePillar_move_vec{ 0,1,2 };
@@ -76,9 +76,11 @@ private:
 	};
 	std::vector<FirePillarState*> FBSGroup{};
 	int Speed{ 0 };
-	void addFirePillar(int num = 8);
+	void addFirePillar(int num = 7);
 	int waves{ 0 };
 
 	void leftShiftFirePillar();
 	void rightShiftFirePillar();
+
+	Boss* m_boss{};
 };

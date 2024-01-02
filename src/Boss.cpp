@@ -73,6 +73,10 @@ void Boss::IdleProccess()
 {
 	current = idle;
 	cur_ptr = Idle_img;
+	if (isDead)
+	{
+		m_boss_state = _Death;
+	}
 	if (IdleTime > SDL_GetTicks())
 	{
 		return;
@@ -81,7 +85,7 @@ void Boss::IdleProccess()
 	{
 		m_boss_state = _FirePillar;
 		FirePillarCd = SDL_GetTicks() + static_cast<uint64_t>(15000);
-		FirePillarAttackTime = SDL_GetTicks() + static_cast<uint64_t>(8000);
+		FirePillarAttackTime = SDL_GetTicks() + static_cast<uint64_t>(10000);
 		m_scenes->setSkyState(true);
 		m_scenes->setPillarHide();
 	}
@@ -97,13 +101,13 @@ void Boss::FireBallSkill()
 {
 	current = Attack;
 	cur_ptr = Attack_img;
-	if (FireBallAttackTime > SDL_GetTicks())
-	{
-		return;
-	}
 	if (isDead)
 	{
 		m_boss_state = _Death;
+	}
+	if (FireBallAttackTime > SDL_GetTicks())
+	{
+		return;
 	}
 	else
 	{
@@ -117,13 +121,13 @@ void Boss::FirePillarSkill()
 {
 	current = Attack;
 	cur_ptr = Attack_img;
-	if (FirePillarAttackTime > SDL_GetTicks())
-	{
-		return;
-	}
 	if (isDead)
 	{
 		m_boss_state = _Death;
+	}
+	if (FirePillarAttackTime > SDL_GetTicks())
+	{
+		return;
 	}
 	else
 	{
