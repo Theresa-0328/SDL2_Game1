@@ -32,6 +32,11 @@ void Boss::Render()
 		index++;
 		if (index >= current.size())
 		{
+			if (m_boss_state == _Death)
+			{
+				index = 7;
+				return;
+			}
 			index = 0;
 		}
 	}
@@ -40,6 +45,12 @@ void Boss::Render()
 void Boss::update()
 {
 	UpdateBossState(m_boss_state);
+	UpdateBossHp();
+
+	if (SDL_GetTicks() > 30000)
+	{
+		isDead = 1;
+	}
 }
 
 void Boss::UpdateBossState(BossState state)
@@ -77,6 +88,10 @@ void Boss::IdleProccess()
 	{
 		m_boss_state = _Death;
 	}
+	if (isHit)
+	{
+		m_boss_state = _BeHit;
+	}
 	if (IdleTime > SDL_GetTicks())
 	{
 		return;
@@ -91,8 +106,10 @@ void Boss::IdleProccess()
 	}
 	else
 	{
-		FireBallAttackTime = static_cast<uint64_t>(7200) + SDL_GetTicks();
-		m_boss_state = _FireBall;
+		DashSkillTime = static_cast<uint64_t>(2000) + SDL_GetTicks();
+		m_boss_state = _Dash;
+		//FireBallAttackTime = static_cast<uint64_t>(7200) + SDL_GetTicks();
+		//m_boss_state = _FireBall;
 	}
 	index = 0;
 }
@@ -139,6 +156,70 @@ void Boss::FirePillarSkill()
 	m_scenes->setPillarHide();
 }
 
+void Boss::DashSkill()
+{
+	current = Walk;
+	cur_ptr = Walk_img;
+	if (isDead)
+	{
+		m_boss_state = _Death;
+	}
+	if (DashSkillTime <= SDL_GetTicks())
+	{
+		if (bossLocation.x > 640)
+		{
+			flip = SDL_FLIP_HORIZONTAL;
+		}
+		else
+		{
+			flip = SDL_FLIP_NONE;
+		}
+		FireBallAttackTime = static_cast<uint64_t>(7200) + SDL_GetTicks();
+		m_boss_state = _FireBall;
+		index = 0;
+	}
+	else
+	{
+		if (flip)
+		{
+			bossLocation.x -= 12;
+		}
+		else
+		{
+			bossLocation.x += 12;
+		}
+	}
+}
+
+void Boss::DeathProccess()
+{
+	current = Death;
+	cur_ptr = Death_img;
+	if (isDead)
+	{
+		m_boss_state = _Death;
+	}
+}
+
+void Boss::BeHitProccess()
+{
+	current = Get_Hit;
+	cur_ptr = Get_Hit_img;
+	if (isDead)
+	{
+		m_boss_state = _Death;
+		return;
+	}
+	if (!isHit)
+	{
+
+	}
+	if (FirePillarAttackTime > SDL_GetTicks())
+	{
+		return;
+	}
+}
+
 void Boss::leftShiftBoss()
 {
 	bossLocation.x += 4;
@@ -149,28 +230,19 @@ void Boss::rightShiftBoss()
 	bossLocation.x -= 4;
 }
 
-void Boss::DeathProccess()
+void Boss::UpdateBossHp()
 {
-	current = Death;
-	cur_ptr = Death_img;
-}
-
-void Boss::DashSkill()
-{
-	current = Walk;
-	cur_ptr = Walk_img;
-	if (DashSkillTime <= SDL_GetTicks())
+	if (Hp <= 0)
 	{
-		FireBallAttackTime = static_cast<uint64_t>(7200) + SDL_GetTicks();
-		m_boss_state = _FireBall;
-		index = 0;
+		isDead = true;
 	}
+
 }
 
-void Boss::BeHitProccess()
+void Boss::BeHit(int Damge)
 {
-	current = Get_Hit;
-	cur_ptr = Get_Hit_img;
+	Hp -= Damge;
+	isHit = true;
 }
 
 Boss::BossState Boss::getBossStart()

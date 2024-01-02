@@ -51,16 +51,16 @@ void FireBall::Render()
 		if (FBSGroup[i].boom)
 		{
 			SDL_Rect sRect = { Explosion[FBSGroup[i].index] * 46, 0, 46,46 };
-			SDL_RenderCopyEx(m_render, Explosion_img.get(), &sRect, &FBSGroup[i].FireBallLocation, 0, nullptr, flip);
+			SDL_RenderCopyEx(m_render, Explosion_img.get(), &sRect, &FBSGroup[i].FireBallLocation, 0, nullptr, m_boss->flip);
 			FBSGroup[i].updateIndex();
 		}
 		else
 		{
 			SDL_Rect sRect = { FireBall_move_vec[index] * 46, 0, 46,46 };
-			SDL_RenderCopyEx(m_render, FireBall_move_img.get(), &sRect, &FBSGroup[i].FireBallLocation, FBSGroup[i].m_angle, nullptr, flip);
+			SDL_RenderCopyEx(m_render, FireBall_move_img.get(), &sRect, &FBSGroup[i].FireBallLocation, FBSGroup[i].m_angle, nullptr, m_boss->flip);
 		}
 #ifdef SHOW_Rect
-		SDL_SetRenderDrawColor(m_render, 0, 0, 255, 0xFF);
+		SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
 		SDL_RenderDrawRect(m_render, &FBSGroup[i].FireBallLocation);
 #endif
 	}
@@ -148,10 +148,19 @@ void FireBall::rightShiftFireBall()
 
 void FireBall::addFireBall(int num)
 {
-	for (int i{ 0 }; i < 7; i++)
+	if (m_boss->flip)
 	{
-		//SDL_RendererFlip
-		FBSGroup.push_back({ { m_boss->bossLocation.x + 225, 430, 185,185 } ,(i - 1) * -15 });
+		for (int i{ 0 }; i < 7; i++)
+		{
+			FBSGroup.push_back({ { m_boss->bossLocation.x - 30, 430, 185,185 } ,(i - 1) * 15 });
+		}
+	}
+	else
+	{
+		for (int i{ 0 }; i < 7; i++)
+		{
+			FBSGroup.push_back({ { m_boss->bossLocation.x + 225, 430, 185,185 } ,(i - 1) * -15 });
+		}
 	}
 }
 
@@ -191,9 +200,18 @@ void FireBall::Move()
 		//std::cout << "FBSGroup.pop_back();  " << i << " " << FBSGroup[i].index << std::endl;
 	}
 	uint32_t time = SDL_GetTicks();
-	if (flip)
+	if (m_boss->flip)
 	{
-
+		for (int i{ 0 }; i < FBSGroup.size(); i++)
+		{
+			if (FBSGroup[i].boom)
+			{
+				continue;
+			}
+			FBSGroup[i].FireBallLocation.x -= Speed;
+			Point C = rotatePoint({ (double)FBSGroup[i].InitLocation.x,(double)FBSGroup[i].InitLocation.y }, { (double)FBSGroup[i].FireBallLocation.x,450 }, FBSGroup[i].m_angle);
+			FBSGroup[i].FireBallLocation.y = C.y;
+		}
 	}
 	else
 	{

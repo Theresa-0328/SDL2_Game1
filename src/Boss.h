@@ -30,14 +30,16 @@ public:
 
 	SDL_Rect bossLocation{ 0, 360, 400, 400 };
 	int index = 0;
+	SDL_RendererFlip flip = SDL_FLIP_NONE;
 private:
 	bool isDead{ false };
+	bool isHit{ false };
+
 	SDL_Renderer* m_render;
 	Scenes* m_scenes;
 	int renderW{};
 	int renderH{};
 
-	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	int maxDuration = 150;
 	int currentTime = SDL_GetTicks();
 	int ChangeTime = currentTime + maxDuration;
@@ -79,4 +81,8 @@ private:
 
 	void leftShiftBoss();
 	void rightShiftBoss();
+
+	int Hp{ 100 };
+	void UpdateBossHp();
+	void BeHit(int Damge);
 };

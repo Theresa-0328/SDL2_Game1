@@ -18,5 +18,7 @@ if(MSVC)
     message("Using MSVC")
 	# 指定C++ 异常处理程序try()catch的展开语义
 	set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "/EHsc")
+	#set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "/d1 reportAllClassLayout")
+	#set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "/d1 reportSingleClassLayoutBoss")
 	#set_target_properties(SDL2_Game1 PROPERTIES WIN32_EXECUTABLE TRUE)
 endif()

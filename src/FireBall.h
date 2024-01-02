@@ -20,7 +20,7 @@ public:
 private:
 	SDL_Renderer* m_render;
 
-	SDL_RendererFlip flip = SDL_FLIP_NONE;
+	//SDL_RendererFlip flip = SDL_FLIP_NONE;
 
 	int index = 0;
 	int maxDuration = 150;

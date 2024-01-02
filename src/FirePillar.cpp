@@ -53,6 +53,10 @@ void FirePillar::Render()
 			SDL_Rect rect1{ 74 * FirePillar_vec[FBSGroup[i]->index],0,74,160 };
 			SDL_RenderCopyEx(m_render, FirePillar_img.get(), &rect1, &FBSGroup[i]->Location, 0, nullptr, flip);
 		}
+#ifdef SHOW_Rect
+		SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
+		SDL_RenderDrawRect(m_render, &FBSGroup[i]->Location);
+#endif
 		FBSGroup[i]->updateIndex();
 	}
 }
@@ -96,7 +100,6 @@ void FirePillar::Move()
 		FirePillarState* Fp = FBSGroup[i];
 		if (Fp->state == FirePillar::FirePillarState::State::move)
 		{
-			Fp->index = 0;
 			Fp->Location.y += Speed;
 			Fp->Location.w = 128;
 			Fp->Location.h = 128;
