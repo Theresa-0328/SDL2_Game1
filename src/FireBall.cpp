@@ -24,7 +24,8 @@ FireBall::FireBall(SDL_Renderer* render) :
 	FireBall_move_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Ball/Move.png"), TextureDeleter),
 	Explosion_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Ball/Explosion.png"), TextureDeleter),
 	m_boss(nullptr),
-	m_scenes(nullptr)
+	m_scenes(nullptr),
+	m_player(nullptr)
 {
 }
 
@@ -62,8 +63,12 @@ void FireBall::Render()
 			SDL_RenderCopyEx(m_render, FireBall_move_img.get(), &sRect, &FBSGroup[i].FireBallLocation, FBSGroup[i].m_angle, nullptr, m_boss->flip);
 		}
 #ifdef SHOW_Rect
-		SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
+		SDL_SetRenderDrawColor(m_render, 0, 0, 255, 0xFF);
 		SDL_RenderDrawRect(m_render, &FBSGroup[i].FireBallLocation);
+
+		SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
+		SDL_Rect sRect = { FBSGroup[i].FireBallLocation.x + 80, FBSGroup[i].FireBallLocation.y + 70, 55,55 };
+		SDL_RenderDrawRect(m_render, &sRect);
 #endif
 	}
 	currentTime = SDL_GetTicks();
@@ -119,19 +124,20 @@ void FireBall::isExplosion()
 		{
 			continue;
 		}
-		if (SDL_HasIntersection(&GroundCollision, &it.FireBallLocation))
+		SDL_Rect sRect = { it.FireBallLocation.x + 80,  it.FireBallLocation.y + 70, 55,55 };
+		if (SDL_HasIntersection(&GroundCollision, &sRect))
 		{
 			it.boom = true;
 			it.index = 0;
 		}
-		if (SDL_HasIntersection(&m_player->PlayerCollision, &it.FireBallLocation))
+		if (SDL_HasIntersection(&m_player->PlayerCollision, &sRect))
 		{
 			it.boom = true;
 			it.index = 0;
 		}
 		SDL_Rect r1{};
 		m_scenes->getPillarRectCollision(r1);
-		if (SDL_HasIntersection(&r1, &it.FireBallLocation))
+		if (SDL_HasIntersection(&r1, &sRect))
 		{
 			it.boom = true;
 			it.index = 0;
@@ -161,14 +167,14 @@ void FireBall::addFireBall(int num)
 	{
 		for (int i{ 0 }; i < 7; i++)
 		{
-			FBSGroup.push_back({ { m_boss->bossLocation.x - 30, 430, 185,185 } ,(i - 1) * 15 });
+			FBSGroup.push_back({ { m_boss->bossLocation.x - 30, 430,200,200 } ,(i - 1) * 15 });
 		}
 	}
 	else
 	{
 		for (int i{ 0 }; i < 7; i++)
 		{
-			FBSGroup.push_back({ { m_boss->bossLocation.x + 225, 430, 185,185 } ,(i - 1) * -15 });
+			FBSGroup.push_back({ { m_boss->bossLocation.x + 225, 430,200,200 } ,(i - 1) * -15 });
 		}
 	}
 }

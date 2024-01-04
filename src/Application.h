@@ -16,6 +16,7 @@
 #include "Boss.h"
 #include "FireBall.h"
 #include "FirePillar.h"
+#include "Ui.h"
 
 class Application
 {
@@ -44,6 +45,7 @@ private:
 	std::unique_ptr<Boss> m_boss;
 	std::unique_ptr<FireBall> m_fireball;
 	std::unique_ptr<FirePillar> m_firepillar;
+	std::shared_ptr<UI> m_ui;
 
 	bool k_left{};
 	bool k_right{};

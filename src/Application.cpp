@@ -9,7 +9,8 @@ Application::Application() :
 	renderW(0),
 	renderH(0),
 	quit(false),
-	m_scenes(nullptr)
+	m_scenes(nullptr),
+	m_ui(nullptr)
 {
 	int ret = SDL_Init(SDL_INIT_VIDEO);
 	ret = IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
@@ -25,6 +26,7 @@ Application::Application() :
 	m_boss = std::make_unique<Boss>(m_render, m_scenes.get());
 	m_fireball = std::make_unique<FireBall>(m_render);
 	m_firepillar = std::make_unique<FirePillar>(m_render);
+	m_ui = std::make_shared<UI>(m_render);
 }
 
 Application::~Application()
@@ -144,14 +146,13 @@ void Application::init()
 
 void Application::update()
 {
-	m_player->Update();
-
 	m_scenes->setKeyboard(k_left, k_right);
 	m_player->setKeyboard(k_left, k_right, k_J, k_space_down, k_space_up);
 	m_boss->setKeyboard(k_left, k_right);
 	m_fireball->setKeyboard(k_left, k_right);
 	m_firepillar->setKeyboard(k_left, k_right);
 
+	m_player->Update();
 	m_boss->update();
 	m_fireball->Update();
 	m_firepillar->Update(m_boss.get());
@@ -168,6 +169,7 @@ void Application::render()
 	m_scenes->RenderForeground();
 	m_fireball->Render();
 	m_firepillar->Render();
+	m_ui->Render();
 
 	SDL_RenderPresent(m_render);
 
