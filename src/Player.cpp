@@ -25,17 +25,6 @@ void Player::Render()
 	SDL_Rect sRect = { current[human_index].second * widthSpr, current[human_index].first * heightSpr, widthSpr, heightSpr };
 	SDL_RenderCopyEx(m_render, player2, &sRect, &player2_img_rect, 0, nullptr, human_flip);
 
-	currentTime = SDL_GetTicks();
-	if (currentTime > human_spriteChangeTime)
-	{
-		human_spriteChangeTime += human_maxDuration;
-		human_index++;
-		if (human_index >= current.size())
-		{
-			human_index = 0;
-		}
-	}
-
 #ifdef SHOW_Rect
 	SDL_SetRenderDrawColor(m_render, 0, 0, 255, 0xFF);
 	SDL_RenderDrawRect(m_render, &player2_img_rect);
@@ -44,15 +33,39 @@ void Player::Render()
 	SDL_RenderDrawRect(m_render, &PlayerCollision);
 #endif // SHOW_Rect
 
+	currentTime = SDL_GetTicks();
+	if (currentTime > human_spriteChangeTime)
+	{
+		human_spriteChangeTime += human_maxDuration;
+		human_index++;
+		if (human_index >= current.size())
+		{
+			if (current == die)
+			{
+				human_index = 6;
+				return;
+			}
+			human_index = 0;
+		}
+	}
 }
 
 void Player::Update()
 {
+	if (Hp <= 0)
+	{
+		isDead = true;
+	}
 	//CheckGround();
 }
 
 void Player::setKeyboard(bool left, bool right, bool J, bool Space1, bool Space2)
 {
+	if (isDead)
+	{
+		current = die;
+		return;
+	}
 	if (current != jump && current != fall)
 	{
 		current = idle2;
@@ -76,6 +89,20 @@ void Player::setKeyboard(bool left, bool right, bool J, bool Space1, bool Space2
 void Player::Init(Scenes* s)
 {
 	m_scenes = s;
+}
+
+void Player::setHp(int hp)
+{
+	Hp += hp;
+	if (Hp <= 0)
+	{
+		Hp = 0;
+	}
+}
+
+int Player::getHp()
+{
+	return Hp;
 }
 
 void Player::Move(bool left, bool right)

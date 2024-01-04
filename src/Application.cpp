@@ -139,7 +139,7 @@ bool Application::ProcessMessage()
 
 void Application::init()
 {
-	m_fireball->Init(m_boss.get(), m_scenes.get(), m_player.get());
+	m_fireball->Init(m_boss.get(), m_scenes.get(), m_player.get(), m_ui.get());
 	m_firepillar->Init(m_boss.get());
 	m_player->Init(m_scenes.get());
 }

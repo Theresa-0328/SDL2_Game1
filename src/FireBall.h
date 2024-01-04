@@ -7,13 +7,14 @@
 #include "Boss.h"
 #include "Deleter.hpp"
 #include "Player.h"
+#include "Ui.h"
 
 class FireBall
 {
 public:
 	FireBall(SDL_Renderer* render);
 	~FireBall();
-	void Init(Boss* boss, Scenes* scenes, Player* player);
+	void Init(Boss* boss, Scenes* scenes, Player* player, UI* ui);
 	void Render();
 	void Update();
 	void Start();
@@ -21,6 +22,9 @@ public:
 private:
 	SDL_Renderer* m_render;
 	Player* m_player;
+	Boss* m_boss;
+	Scenes* m_scenes;
+	UI* m_ui;
 
 	int index = 0;
 	int maxDuration = 150;
@@ -75,8 +79,6 @@ private:
 	void leftShiftFireBall();
 	void rightShiftFireBall();
 
-	Boss* m_boss;
-	Scenes* m_scenes;
 	void addFireBall(int num = 7);
 	int waves{ 0 };
 };

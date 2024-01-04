@@ -25,7 +25,8 @@ FireBall::FireBall(SDL_Renderer* render) :
 	Explosion_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Ball/Explosion.png"), TextureDeleter),
 	m_boss(nullptr),
 	m_scenes(nullptr),
-	m_player(nullptr)
+	m_player(nullptr),
+	m_ui(nullptr)
 {
 }
 
@@ -34,11 +35,12 @@ FireBall::~FireBall()
 
 }
 
-void FireBall::Init(Boss* boss, Scenes* scenes, Player* player)
+void FireBall::Init(Boss* boss, Scenes* scenes, Player* player, UI* ui)
 {
 	m_boss = boss;
 	m_scenes = scenes;
 	m_player = player;
+	m_ui = ui;
 }
 
 void FireBall::Render()
@@ -118,6 +120,8 @@ void FireBall::Update()
 
 void FireBall::isExplosion()
 {
+	SDL_Rect r1{};
+	m_scenes->getPillarRectCollision(r1);
 	for (auto& it : FBSGroup)
 	{
 		if (it.boom)
@@ -134,9 +138,9 @@ void FireBall::isExplosion()
 		{
 			it.boom = true;
 			it.index = 0;
+			m_player->setHp(-10);
+			m_ui->setPlayerHpValue(m_player->getHp());
 		}
-		SDL_Rect r1{};
-		m_scenes->getPillarRectCollision(r1);
 		if (SDL_HasIntersection(&r1, &sRect))
 		{
 			it.boom = true;

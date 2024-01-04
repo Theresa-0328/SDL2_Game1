@@ -27,7 +27,6 @@ public:
 	};
 	BossState getBossStart();
 	void setKeyboard(bool left, bool right);
-
 	SDL_Rect bossLocation{ 0, 360, 400, 400 };
 	int index = 0;
 	SDL_RendererFlip flip = SDL_FLIP_NONE;

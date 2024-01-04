@@ -15,6 +15,8 @@ public:
 	void Update();
 	void setKeyboard(bool left, bool right, bool J, bool Space1, bool Space2);
 	void Init(Scenes* s);
+	void setHp(int hp);
+	int getHp();
 	SDL_Rect PlayerCollision{ 606, 536, 58, 87 };
 private:
 	SDL_Renderer* m_render;
@@ -69,6 +71,7 @@ private:
 	static const int JumpMax{ 2 };//最大跳跃数
 	int JumpCount{ 0 };//当前跳跃数
 	int JumpSpeed{ 0 };
+	bool isDead{ false };
 
 	void CheckGround();
 	void Move(bool left, bool right);

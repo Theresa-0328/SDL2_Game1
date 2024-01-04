@@ -23,6 +23,10 @@ void Boss::Render()
 #ifdef SHOW_Rect
 	SDL_SetRenderDrawColor(m_render, 0, 0, 255, 0xFF);
 	SDL_RenderDrawRect(m_render, &bossLocation);
+
+	SDL_Rect Rect = { bossLocation.x + 89, bossLocation.y + 132, 221,127 };
+	SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
+	SDL_RenderDrawRect(m_render, &Rect);
 #endif
 
 	currentTime = SDL_GetTicks();
@@ -47,7 +51,7 @@ void Boss::update()
 	UpdateBossState(m_boss_state);
 	UpdateBossHp();
 
-	if (SDL_GetTicks() > 60000)
+	if (SDL_GetTicks() > 120000)
 	{
 		isDead = 1;
 	}
