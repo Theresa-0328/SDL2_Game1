@@ -47,7 +47,7 @@ void Boss::update()
 	UpdateBossState(m_boss_state);
 	UpdateBossHp();
 
-	if (SDL_GetTicks() > 30000)
+	if (SDL_GetTicks() > 60000)
 	{
 		isDead = 1;
 	}

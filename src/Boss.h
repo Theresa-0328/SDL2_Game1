@@ -82,6 +82,7 @@ private:
 	void leftShiftBoss();
 	void rightShiftBoss();
 
+	static const int MAX_HP{ 100 };
 	int Hp{ 100 };
 	void UpdateBossHp();
 	void BeHit(int Damge);

@@ -6,21 +6,21 @@
 
 #include "Boss.h"
 #include "Deleter.hpp"
+#include "Player.h"
 
 class FireBall
 {
 public:
 	FireBall(SDL_Renderer* render);
 	~FireBall();
-	void Init(Boss* boss);
+	void Init(Boss* boss, Scenes* scenes, Player* player);
 	void Render();
 	void Update();
 	void Start();
 	void setKeyboard(bool left, bool right);
 private:
 	SDL_Renderer* m_render;
-
-	//SDL_RendererFlip flip = SDL_FLIP_NONE;
+	Player* m_player;
 
 	int index = 0;
 	int maxDuration = 150;
@@ -76,6 +76,7 @@ private:
 	void rightShiftFireBall();
 
 	Boss* m_boss;
+	Scenes* m_scenes;
 	void addFireBall(int num = 7);
 	int waves{ 0 };
 };

@@ -58,6 +58,18 @@ void Scenes::RenderBackground()
 		SetBlackSkyAlpha();
 		SDL_RenderCopy(m_render, blackSky, 0, 0);
 	}
+
+	SDL_Rect Pillar_sRect{ 224 ,48,32,96 };
+	SDL_Rect PillarRect1{ Pillar_move, 430, Pillar_sRect.w * 3, Pillar_sRect.h * 3 };
+	SDL_RenderCopy(m_render, tileset_sliced, &Pillar_sRect, &PillarRect1);
+	SDL_Rect PillarRect2{ Pillar_move - 540, 430, Pillar_sRect.w * 3, Pillar_sRect.h * 3 };
+	SDL_RenderCopy(m_render, tileset_sliced, &Pillar_sRect, &PillarRect2);
+	PillarRect1_Collision.x = Pillar_move;
+
+#ifdef SHOW_Rect
+	SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
+	SDL_RenderDrawRect(m_render, &PillarRect1_Collision);
+#endif // SHOW_Rect
 }
 
 void Scenes::RenderForeground()
@@ -98,6 +110,8 @@ void Scenes::leftShiftScene()
 	mountains_move -= 2;
 	graveyard_move -= 3;
 	tileset_sliced_move -= 4;
+
+	Pillar_move += 4;
 }
 
 void Scenes::rightShiftScene()
@@ -109,6 +123,8 @@ void Scenes::rightShiftScene()
 	mountains_move += 2;
 	graveyard_move += 3;
 	tileset_sliced_move += 4;
+
+	Pillar_move -= 4;
 }
 
 void Scenes::setSkyState(bool isblack)
@@ -120,6 +136,11 @@ void Scenes::setSkyState(bool isblack)
 void Scenes::setPillarHide()
 {
 
+}
+
+void Scenes::getPillarRectCollision(SDL_Rect& r1)
+{
+	r1 = PillarRect1_Collision;
 }
 
 void Scenes::SetBlackSkyAlpha()

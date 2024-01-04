@@ -126,7 +126,7 @@ void FirePillar::Move()
 			Fp->Location.w = 300;
 			Fp->Location.h = 650;
 			Fp->vec_size = FirePillar_vec.size();
-			Fp->maxDuration = 200;
+			Fp->maxDuration = 150;
 			Fp->lifeTime = SDL_GetTicks() + 1200;
 		}
 		if (FBSGroup[i]->state == FirePillar::FirePillarState::State::pillar && FBSGroup[i]->lifeTime <= SDL_GetTicks())

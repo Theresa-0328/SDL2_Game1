@@ -85,6 +85,12 @@ bool Application::ProcessMessage()
 		case SDLK_w: /*tigerHeady -= 1;*/ break;
 		case SDLK_s: /*tigerHeady += 1;*/ break;
 		case SDLK_j: k_J = true; break;
+		case SDLK_SPACE:
+		{
+			k_space_down = true;
+			k_space_up = false;
+			break;
+		}
 		default:
 			break;
 		}
@@ -112,6 +118,12 @@ bool Application::ProcessMessage()
 		case SDLK_w: /*tigerHeady -= 1;*/ break;
 		case SDLK_s: /*tigerHeady += 1;*/ break;
 		case SDLK_j: k_J = false; break;
+		case SDLK_SPACE:
+		{
+			k_space_up = true;
+			k_space_down = false;
+			break;
+		}
 		default:
 			break;
 		}
@@ -125,14 +137,17 @@ bool Application::ProcessMessage()
 
 void Application::init()
 {
-	m_fireball->Init(m_boss.get());
+	m_fireball->Init(m_boss.get(), m_scenes.get(), m_player.get());
 	m_firepillar->Init(m_boss.get());
+	m_player->Init(m_scenes.get());
 }
 
 void Application::update()
 {
+	m_player->Update();
+
 	m_scenes->setKeyboard(k_left, k_right);
-	m_player->setKeyboard(k_left, k_right, k_J);
+	m_player->setKeyboard(k_left, k_right, k_J, k_space_down, k_space_up);
 	m_boss->setKeyboard(k_left, k_right);
 	m_fireball->setKeyboard(k_left, k_right);
 	m_firepillar->setKeyboard(k_left, k_right);
@@ -149,7 +164,7 @@ void Application::render()
 
 	m_scenes->RenderBackground();
 	m_boss->Render();
-	m_player->task();
+	m_player->Render();
 	m_scenes->RenderForeground();
 	m_fireball->Render();
 	m_firepillar->Render();
