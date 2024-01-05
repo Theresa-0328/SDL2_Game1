@@ -29,7 +29,21 @@ private:
 	bool isblack;
 	bool Grad{ false };
 
+	SDL_Texture* tree3{};
+	SDL_Rect tree3Rect{ 0 ,285,350,339 };
+	SDL_Texture* stone2{};
+	SDL_Rect stone2Rect{ 329,533,55,82 };
+	SDL_Texture* bush_large{};
+	SDL_Rect bush_largeRect{ 487,491,155 ,132 };
+	SDL_Texture* statue{};
+	SDL_Rect statueRect{ 654,481 ,128,152 };
+	SDL_Texture* stone4{};
+	SDL_Rect stone4Rect{ 888,541,40,80 };
+	SDL_Texture* tree2{};
+	SDL_Rect tree2Rect{ 1089 ,375,382,270 };
+
 	SDL_Texture* blackSky{};
+
 	SDL_Texture* background;
 	int backgroundW{};
 	int backgroundH{};

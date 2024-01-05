@@ -8,6 +8,12 @@ Scenes::Scenes(SDL_Renderer* render)
 	graveyard(IMG_LoadTexture(m_render, "assets/scenes/graveyard.png")),
 	mountains(IMG_LoadTexture(m_render, "assets/scenes/mountains.png")),
 	tileset_sliced(IMG_LoadTexture(m_render, "assets/scenes/tileset-sliced.png")),
+	stone2(IMG_LoadTexture(m_render, "assets/scenes/sliced/stone-2.png")),
+	bush_large(IMG_LoadTexture(m_render, "assets/scenes/sliced/bush-large.png")),
+	statue(IMG_LoadTexture(m_render, "assets/scenes/sliced/statue.png")),
+	stone4(IMG_LoadTexture(m_render, "assets/scenes/sliced/stone-4.png")),
+	tree2(IMG_LoadTexture(m_render, "assets/scenes/sliced/tree-2.png")),
+	tree3(IMG_LoadTexture(m_render, "assets/scenes/sliced/tree-3.png")),
 	isblack(false)
 {
 	SDL_GetRendererOutputSize(m_render, &renderW, &renderH);
@@ -66,6 +72,13 @@ void Scenes::RenderBackground()
 	SDL_RenderCopy(m_render, tileset_sliced, &Pillar_sRect, &PillarRect2);
 	PillarRect1_Collision.x = Pillar_move;
 
+	SDL_RenderCopy(m_render, tree3, 0, &tree3Rect);
+	SDL_RenderCopy(m_render, stone2, 0, &stone2Rect);
+	SDL_RenderCopy(m_render, bush_large, 0, &bush_largeRect);
+	SDL_RenderCopy(m_render, statue, 0, &statueRect);
+	SDL_RenderCopy(m_render, stone4, 0, &stone4Rect);
+	SDL_RenderCopy(m_render, tree2, 0, &tree2Rect);
+
 #ifdef SHOW_Rect
 	SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
 	SDL_RenderDrawRect(m_render, &PillarRect1_Collision);
@@ -116,6 +129,13 @@ void Scenes::leftShiftScene()
 	tileset_sliced_move -= 4;
 
 	Pillar_move += 4;
+
+	tree3Rect.x += 4;
+	stone2Rect.x += 4;
+	bush_largeRect.x += 4;
+	statueRect.x += 4;
+	stone4Rect.x += 4;
+	tree2Rect.x += 4;
 }
 
 void Scenes::rightShiftScene()
@@ -129,6 +149,13 @@ void Scenes::rightShiftScene()
 	tileset_sliced_move += 4;
 
 	Pillar_move -= 4;
+
+	tree3Rect.x -= 4;
+	stone2Rect.x -= 4;
+	bush_largeRect.x -= 4;
+	statueRect.x -= 4;
+	stone4Rect.x -= 4;
+	tree2Rect.x -= 4;
 }
 
 void Scenes::setSkyState(bool isblack)
