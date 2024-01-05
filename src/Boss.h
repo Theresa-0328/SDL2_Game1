@@ -8,14 +8,16 @@
 
 #include "Deleter.hpp"
 #include "Scenes.h"
+#include "FireBall.h"
+#include "FirePillar.h"
+#include "Global.hpp"
 
-class Boss
+class Boss :
+	public Base
 {
 public:
 	Boss(SDL_Renderer* render, Scenes* scenes);
 	~Boss();
-	void Render();
-	void update();
 	enum BossState
 	{
 		_FireBall,
@@ -25,17 +27,29 @@ public:
 		_BeHit,
 		_Death,
 	};
-	BossState getBossStart();
+	void Init(UI* ui, Player* player, FireBall* fireBall, FirePillar* firePillar);
+	void Render();
+	void update();
+	BossState getBossStart() const;
 	void setKeyboard(bool left, bool right);
 	SDL_Rect bossLocation{ 0, 360, 400, 400 };
 	int index = 0;
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
+	void setFireCanInput(bool isCanInput);
+	void setHp(int hp);
+	int getHp() const;
 private:
 	bool isDead{ false };
 	bool isHit{ false };
 
 	SDL_Renderer* m_render;
 	Scenes* m_scenes;
+	FireBall* m_fireBall;
+	FirePillar* m_firePillar;
+	UI* m_ui;
+	Player* m_player;
+
+
 	int renderW{};
 	int renderH{};
 
@@ -62,7 +76,7 @@ private:
 	std::shared_ptr<SDL_Texture> cur_ptr{ Idle_img };
 
 	int MaxHp{ 200 };
-	BossState m_boss_state = _Idle;
+	BossState m_boss_state = BossState::_Idle;
 
 	void UpdateBossState(BossState state);
 	void FireBallSkill();

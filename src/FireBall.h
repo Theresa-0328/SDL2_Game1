@@ -4,17 +4,20 @@
 #include <array>
 #include <iostream>
 
-#include "Boss.h"
-#include "Deleter.hpp"
-#include "Player.h"
 #include "Ui.h"
+#include "Global.hpp"
+#include "Scenes.h"
 
-class FireBall
+class Boss;
+class Player;
+
+class FireBall :
+	public Base
 {
 public:
 	FireBall(SDL_Renderer* render);
 	~FireBall();
-	void Init(Boss* boss, Scenes* scenes, Player* player, UI* ui);
+	void Init(Scenes* s, UI* ui, Boss* boss, Player* player);
 	void Render();
 	void Update();
 	void Start();
@@ -39,7 +42,7 @@ private:
 	int LifeTime{};
 
 	void Move();
-	void isExplosion();
+	void checkExplosion();
 
 	struct FireBallState
 	{

@@ -4,11 +4,14 @@
 #include <array>
 #include <iostream>
 
-#include "Boss.h"
 #include "Scenes.h"
 #include "Deleter.hpp"
 
-class FirePillar
+class Boss;
+class Player;
+
+class FirePillar :
+	public Base
 {
 public:
 	FirePillar(SDL_Renderer* render);

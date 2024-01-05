@@ -1,10 +1,16 @@
 ﻿#pragma once
 
+#include <unordered_map>
+#include <string>
+
 #include <SDL.h>
 #include <SDL_image.h>
 
 #include "Deleter.hpp"
-class Scenes
+#include "Base.h"
+
+class Scenes :
+	public Base
 {
 public:
 	Scenes(SDL_Renderer* render);
@@ -54,4 +60,5 @@ private:
 	void rightShiftScene();
 
 	SDL_Rect PillarRect1_Collision{ 0, 430, 96, 50 };
+	std::unordered_map<int, SDL_Rect>Collision{};
 };

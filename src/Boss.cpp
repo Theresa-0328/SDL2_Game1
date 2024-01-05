@@ -15,6 +15,14 @@ Boss::~Boss()
 {
 }
 
+void Boss::Init(UI* ui, Player* player, FireBall* fireBall, FirePillar* firePillar)
+{
+	m_fireBall = fireBall;
+	m_firePillar = firePillar;
+	m_player = player;
+	m_ui = ui;
+}
+
 void Boss::Render()
 {
 	SDL_Rect sRect = { current[index] * 90, 0, 90,90 };
@@ -61,22 +69,22 @@ void Boss::UpdateBossState(BossState state)
 {
 	switch (state)
 	{
-	case Boss::_FireBall:
+	case _FireBall:
 		FireBallSkill();
 		break;
-	case Boss::_FirePillar:
+	case _FirePillar:
 		FirePillarSkill();
 		break;
-	case Boss::_Dash:
+	case _Dash:
 		DashSkill();
 		break;
-	case Boss::_Idle:
+	case _Idle:
 		IdleProccess();
 		break;
-	case Boss::_BeHit:
+	case _BeHit:
 		BeHitProccess();
 		break;
-	case Boss::_Death:
+	case _Death:
 		DeathProccess();
 		break;
 	default:
@@ -90,11 +98,12 @@ void Boss::IdleProccess()
 	cur_ptr = Idle_img;
 	if (isDead)
 	{
-		m_boss_state = _Death;
+		m_boss_state = BossState::_Death;
+		goto end;
 	}
 	if (isHit)
 	{
-		m_boss_state = _BeHit;
+		m_boss_state = BossState::_BeHit;
 	}
 	if (IdleTime > SDL_GetTicks())
 	{
@@ -102,7 +111,7 @@ void Boss::IdleProccess()
 	}
 	if (FirePillarCd <= SDL_GetTicks())
 	{
-		m_boss_state = _FirePillar;
+		m_boss_state = BossState::_FirePillar;
 		FirePillarCd = SDL_GetTicks() + static_cast<uint64_t>(15000);
 		FirePillarAttackTime = SDL_GetTicks() + static_cast<uint64_t>(10000);
 		m_scenes->setSkyState(true);
@@ -111,10 +120,11 @@ void Boss::IdleProccess()
 	else
 	{
 		DashSkillTime = static_cast<uint64_t>(2000) + SDL_GetTicks();
-		m_boss_state = _Dash;
+		m_boss_state = BossState::_Dash;
 		//FireBallAttackTime = static_cast<uint64_t>(7200) + SDL_GetTicks();
 		//m_boss_state = _FireBall;
 	}
+end:
 	index = 0;
 }
 
@@ -124,7 +134,8 @@ void Boss::FireBallSkill()
 	cur_ptr = Attack_img;
 	if (isDead)
 	{
-		m_boss_state = _Death;
+		m_boss_state = BossState::_Idle;
+		return;
 	}
 	if (FireBallAttackTime > SDL_GetTicks())
 	{
@@ -133,7 +144,7 @@ void Boss::FireBallSkill()
 	else
 	{
 		IdleTime = static_cast<uint64_t>(4800) + SDL_GetTicks();
-		m_boss_state = _Idle;
+		m_boss_state = BossState::_Idle;
 		index = 0;
 	}
 }
@@ -144,7 +155,8 @@ void Boss::FirePillarSkill()
 	cur_ptr = Attack_img;
 	if (isDead)
 	{
-		m_boss_state = _Death;
+		m_boss_state = BossState::_Idle;
+		return;
 	}
 	if (FirePillarAttackTime > SDL_GetTicks())
 	{
@@ -153,7 +165,7 @@ void Boss::FirePillarSkill()
 	else
 	{
 		IdleTime = static_cast<uint64_t>(4800) + SDL_GetTicks();
-		m_boss_state = _Idle;
+		m_boss_state = BossState::_Idle;
 		index = 0;
 	}
 	m_scenes->setSkyState(false);
@@ -166,7 +178,8 @@ void Boss::DashSkill()
 	cur_ptr = Walk_img;
 	if (isDead)
 	{
-		m_boss_state = _Death;
+		m_boss_state = BossState::_Idle;
+		return;
 	}
 	if (DashSkillTime <= SDL_GetTicks())
 	{
@@ -179,7 +192,7 @@ void Boss::DashSkill()
 			flip = SDL_FLIP_NONE;
 		}
 		FireBallAttackTime = static_cast<uint64_t>(7200) + SDL_GetTicks();
-		m_boss_state = _FireBall;
+		m_boss_state = BossState::_FireBall;
 		index = 0;
 	}
 	else
@@ -201,7 +214,7 @@ void Boss::DeathProccess()
 	cur_ptr = Death_img;
 	if (isDead)
 	{
-		m_boss_state = _Death;
+		m_boss_state = BossState::_Death;
 	}
 }
 
@@ -211,7 +224,7 @@ void Boss::BeHitProccess()
 	cur_ptr = Get_Hit_img;
 	if (isDead)
 	{
-		m_boss_state = _Death;
+		m_boss_state = BossState::_Idle;
 		return;
 	}
 	if (!isHit)
@@ -239,6 +252,7 @@ void Boss::UpdateBossHp()
 	if (Hp <= 0)
 	{
 		isDead = true;
+		Hp = 0;
 	}
 
 }
@@ -249,13 +263,17 @@ void Boss::BeHit(int Damge)
 	isHit = true;
 }
 
-Boss::BossState Boss::getBossStart()
+Boss::BossState Boss::getBossStart() const
 {
 	return m_boss_state;
 }
 
 void Boss::setKeyboard(bool left, bool right)
 {
+	if (!getCanInput())
+	{
+		return;
+	}
 	if (left)
 	{
 		leftShiftBoss();
@@ -264,4 +282,20 @@ void Boss::setKeyboard(bool left, bool right)
 	{
 		rightShiftBoss();
 	}
+}
+
+void Boss::setFireCanInput(bool isCanInput)
+{
+	m_fireBall->setCanInput(isCanInput);
+	m_firePillar->setCanInput(isCanInput);
+}
+
+void Boss::setHp(int hp)
+{
+	Hp += hp;
+}
+
+int Boss::getHp() const
+{
+	return Hp;
 }

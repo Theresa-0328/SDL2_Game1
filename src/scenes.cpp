@@ -91,6 +91,10 @@ void Scenes::RenderForeground()
 
 void Scenes::setKeyboard(bool left, bool right)
 {
+	if (!getCanInput())
+	{
+		return;
+	}
 	if (left)
 	{
 		leftShiftScene();

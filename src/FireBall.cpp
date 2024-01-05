@@ -3,6 +3,8 @@
 #include <cmath>
 
 #include "Global.hpp"
+#include "Player.h"
+#include "Boss.h"
 
 struct Point
 {
@@ -23,9 +25,6 @@ FireBall::FireBall(SDL_Renderer* render) :
 	m_render(render),
 	FireBall_move_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Ball/Move.png"), TextureDeleter),
 	Explosion_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Ball/Explosion.png"), TextureDeleter),
-	m_boss(nullptr),
-	m_scenes(nullptr),
-	m_player(nullptr),
 	m_ui(nullptr)
 {
 }
@@ -35,12 +34,12 @@ FireBall::~FireBall()
 
 }
 
-void FireBall::Init(Boss* boss, Scenes* scenes, Player* player, UI* ui)
+void FireBall::Init(Scenes* s, UI* ui, Boss* boss, Player* player)
 {
 	m_boss = boss;
-	m_scenes = scenes;
 	m_player = player;
 	m_ui = ui;
+	m_scenes = s;
 }
 
 void FireBall::Render()
@@ -50,7 +49,7 @@ void FireBall::Render()
 		return;
 	}
 	Move();
-	isExplosion();
+	checkExplosion();
 	for (int i{ 0 }; i < FBSGroup.size(); i++)
 	{
 		if (FBSGroup[i].boom)
@@ -118,7 +117,7 @@ void FireBall::Update()
 	//std::cout << "FireBall::Update" << LifeTime << " " << SDL_GetTicks() - FireBallWaitTime + FireBallAttackTime * 5 << std::endl;
 }
 
-void FireBall::isExplosion()
+void FireBall::checkExplosion()
 {
 	SDL_Rect r1{};
 	m_scenes->getPillarRectCollision(r1);
@@ -194,6 +193,10 @@ void FireBall::Start()
 
 void FireBall::setKeyboard(bool left, bool right)
 {
+	if (!getCanInput())
+	{
+		return;
+	}
 	if (left)
 	{
 		leftShiftFireBall();

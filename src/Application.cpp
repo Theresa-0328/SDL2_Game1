@@ -139,9 +139,10 @@ bool Application::ProcessMessage()
 
 void Application::init()
 {
-	m_fireball->Init(m_boss.get(), m_scenes.get(), m_player.get(), m_ui.get());
+	m_boss->Init(m_ui.get(), m_player.get(), m_fireball.get(), m_firepillar.get());
+	m_player->Init(m_ui.get(), m_scenes.get(), m_boss.get());
+	m_fireball->Init(m_scenes.get(), m_ui.get(), m_boss.get(), m_player.get());
 	m_firepillar->Init(m_boss.get());
-	m_player->Init(m_scenes.get());
 }
 
 void Application::update()
@@ -157,7 +158,7 @@ void Application::update()
 	m_fireball->Update();
 	m_firepillar->Update(m_boss.get());
 }
-int a = 0;
+
 void Application::render()
 {
 	SDL_SetRenderDrawColor(m_render, 135, 206, 0, 0xFF);
@@ -173,30 +174,33 @@ void Application::render()
 
 	SDL_RenderPresent(m_render);
 
-	//SDL_Texture* texture = SDL_CreateTexture(
-	//	m_render,
-	//	SDL_PIXELFORMAT_ARGB8888,  // 根据需要使用适当的格式
-	//	SDL_TEXTUREACCESS_TARGET,
-	//	gWINDOW_WEIGHT,
-	//	gWINDOW_HEIGHT
-	//);
-	//SDL_SetRenderTarget(m_render, texture);
+#if 0
+	static int a = 0;
+	SDL_Texture* texture = SDL_CreateTexture(
+		m_render,
+		SDL_PIXELFORMAT_ARGB8888,  // 根据需要使用适当的格式
+		SDL_TEXTUREACCESS_TARGET,
+		gWINDOW_WEIGHT,
+		gWINDOW_HEIGHT
+	);
+	SDL_SetRenderTarget(m_render, texture);
 
-	//SDL_RenderPresent(m_render);
+	SDL_RenderPresent(m_render);
 
-	//SDL_SetRenderTarget(m_render, NULL);
+	SDL_SetRenderTarget(m_render, NULL);
 
-	//SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormat(0, 1280, 720, 32, SDL_PIXELFORMAT_ARGB8888);
+	SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormat(0, 1280, 720, 32, SDL_PIXELFORMAT_ARGB8888);
 
-	//// 将纹理复制到 surface
-	//SDL_RenderReadPixels(
-	//	m_render,
-	//	NULL,
-	//	SDL_PIXELFORMAT_ARGB8888,
-	//	surface->pixels,
-	//	surface->pitch
-	//);
-	//a++;
-	//std::string str = std::to_string(a) + "output.png";
-	//IMG_SavePNG(surface, str.c_str());
+	// 将纹理复制到 surface
+	SDL_RenderReadPixels(
+		m_render,
+		NULL,
+		SDL_PIXELFORMAT_ARGB8888,
+		surface->pixels,
+		surface->pitch
+	);
+	a++;
+	std::string str = std::to_string(a) + "output.png";
+	IMG_SavePNG(surface, str.c_str());
+#endif
 }

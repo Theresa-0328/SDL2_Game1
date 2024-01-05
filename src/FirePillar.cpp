@@ -4,6 +4,8 @@
 #include <string>
 #include <algorithm>
 
+#include "Boss.h"
+
 FirePillar::FirePillar(SDL_Renderer* render) :
 	m_render(render),
 	FirePillar_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Pillar/hell-beast-burn.png"), TextureDeleter),
@@ -158,6 +160,10 @@ void FirePillar::addFirePillar(int num)
 
 void FirePillar::setKeyboard(bool left, bool right)
 {
+	if (!getCanInput())
+	{
+		return;
+	}
 	if (left)
 	{
 		leftShiftFirePillar();

@@ -63,7 +63,9 @@ void Player::Update()
 	if (Hp <= 0)
 	{
 		isDead = true;
+		SetAllCanInput(false);
 	}
+	InAttack();
 	//CheckGround();
 }
 
@@ -74,7 +76,7 @@ void Player::setKeyboard(bool left, bool right, bool J, bool Space1, bool Space2
 		current = die;
 		return;
 	}
-	if (current != jump && current != fall)
+	if (current != attack1 && current != attack2 && current != jump && current != fall)
 	{
 		current = idle2;
 		Move(left, right);
@@ -88,15 +90,17 @@ void Player::setKeyboard(bool left, bool right, bool J, bool Space1, bool Space2
 	{
 		b1 = true;
 	}
-	if (J)
+	if (IsGround == true && J)
 	{
-		current = attack1;
+		Attack();
 	}
 }
 
-void Player::Init(Scenes* s)
+void Player::Init(UI* ui, Scenes* s, Boss* b)
 {
 	m_scenes = s;
+	m_boss = b;
+	m_ui = ui;
 }
 
 void Player::setHp(int hp)
@@ -108,7 +112,7 @@ void Player::setHp(int hp)
 	}
 }
 
-int Player::getHp()
+int Player::getHp() const
 {
 	return Hp;
 }
@@ -211,6 +215,37 @@ Uint32 Player::InPillarCallback(Uint32 interval, void* param)
 	if (!it->isInPillar(r1))
 	{
 		SDL_AddTimer(100, Player::fallCallback, param);
+		it->IsGround = false;
+		return 0;
+	}
+	return 16;
+}
+
+Uint32 Player::Attack1Callback(Uint32 interval, void* param)
+{
+	Player* it{ static_cast<Player*>(param) };
+	//std::cout << "Attack1 it->human_index " << it->human_index << "\n";
+	it->checkAttackHit();
+	if (it->human_index == 4)
+	{
+		it->canInput = true;
+		it->current = it->idle2;
+		it->SetAllCanInput(true);
+		return 0;
+	}
+	return 16;
+}
+
+Uint32 Player::Attack2Callback(Uint32 interval, void* param)
+{
+	Player* it{ static_cast<Player*>(param) };
+	//std::cout << "Attack2 it->human_index " << it->human_index << "\n";
+	it->checkAttackHit();
+	if (it->human_index == 5)
+	{
+		it->canInput = true;
+		it->current = it->idle2;
+		it->SetAllCanInput(true);
 		return 0;
 	}
 	return 16;
@@ -256,6 +291,35 @@ void Player::Jump()
 	}
 }
 
+void Player::Attack()
+{
+	if (!canInput)
+		return;
+	SetAllCanInput(false);
+	canInput = false;
+	AttackMode = 1;
+	ComboCount++;
+	if (ComboCount > 2)
+	{
+		ComboCount = 1;
+	}
+	StartComboTime = SDL_GetTicks() + ComboTime;
+	if (ComboCount == 1)
+	{
+		current = attack1;
+		human_index = 0;
+		HitBoss = false;
+		SDL_AddTimer(16, Player::Attack1Callback, this);
+	}
+	if (ComboCount == 2)
+	{
+		current = attack2;
+		human_index = 0;
+		HitBoss = false;
+		SDL_AddTimer(16, Player::Attack2Callback, this);
+	}
+}
+
 bool Player::isInPillar(SDL_Rect rect1)
 {
 	SDL_Rect player_bottom{ PlayerCollision.x,PlayerCollision.y + PlayerCollision.h - 1 ,PlayerCollision.w,5 };
@@ -266,4 +330,37 @@ bool Player::isInPillar(SDL_Rect rect1)
 		return true;
 	}
 	return false;
+}
+
+void Player::InAttack()
+{
+	if (StartComboTime < SDL_GetTicks())
+	{
+		StartComboTime = 0;
+		ComboCount = 0;
+	}
+}
+
+void Player::SetAllCanInput(bool CanInput)
+{
+	m_scenes->setCanInput(CanInput);
+	m_boss->setCanInput(CanInput);
+	m_boss->setFireCanInput(CanInput);
+}
+
+void Player::checkAttackHit()
+{
+	if (HitBoss)
+		return;
+	SDL_Rect Rect = { m_boss->bossLocation.x + 89, m_boss->bossLocation.y + 132, 221,127 };
+	if (!SDL_HasIntersection(&PlayerCollision, &Rect))
+	{
+		return;
+	}
+	HitBoss = true;
+	if (AttackMode == 1)
+	{
+		m_boss->setHp(-10);
+		m_ui->setBossHpValue(m_boss->getHp());
+	}
 }

@@ -5,6 +5,7 @@
 #include <SDL_image.h>
 
 #include "Scenes.h"
+#include "Boss.h"
 
 class Player
 {
@@ -14,13 +15,15 @@ public:
 	void Render();
 	void Update();
 	void setKeyboard(bool left, bool right, bool J, bool Space1, bool Space2);
-	void Init(Scenes* s);
+	void Init(UI* ui, Scenes* s, Boss* b);
 	void setHp(int hp);
-	int getHp();
+	int getHp() const;
 	SDL_Rect PlayerCollision{ 606, 536, 58, 87 };
 private:
 	SDL_Renderer* m_render;
 	Scenes* m_scenes{};
+	Boss* m_boss{};
+	UI* m_ui{};
 
 	SDL_Texture* player2;
 
@@ -54,6 +57,7 @@ private:
 	std::vector<std::pair<int, int>> attack1{ {6, 0}, {6, 1}, {6, 2}, {6, 3}, {6, 4} };
 	std::vector<std::pair<int, int>> attack2{ {6, 5}, {6, 6}, {7, 0}, {7, 1}, {7, 2}, {7, 3} };
 	std::vector<std::pair<int, int>> attack3{ {7, 4}, {7, 5}, {7, 6}, {8, 0}, {8, 1}, {8, 2} };
+	std::vector<std::pair<int, int>> attack4{ {6, 0}, {6, 1}, {6, 2}, {6, 3}, {6, 4},{6, 5}, {6, 6}, {7, 0}, {7, 1}, {7, 2}, {7, 3} };
 	std::vector<std::pair<int, int>> hurt{ {8, 3}, {8, 4}, {8, 5} };
 	std::vector<std::pair<int, int>> die{ {8, 6}, {9, 0}, {9, 1}, {9, 2}, {9, 3}, {9, 4}, {9, 5} };
 	std::vector<std::pair<int, int>> jump2{ {9, 6}, {10, 0}, {10, 1} };
@@ -64,20 +68,31 @@ private:
 	Uint32 static jump2Callback(Uint32 interval, void* param);
 	Uint32 static fallCallback(Uint32 interval, void* param);
 	Uint32 static InPillarCallback(Uint32 interval, void* param);
+	Uint32 static Attack1Callback(Uint32 interval, void* param);
+	Uint32 static Attack2Callback(Uint32 interval, void* param);
 	SDL_TimerID myTimerID = 0;
 
 	bool IsGround{ true };//判断能否跳跃
 	bool IsJump{ false };//判断是否在空中
 	static const int JumpMax{ 2 };//最大跳跃数
 	int JumpCount{ 0 };//当前跳跃数
-	int JumpSpeed{ 0 };
-	bool isDead{ false };
+	int JumpSpeed{ 0 };//跳跃速度
+	bool isDead{ false };//是否死亡
+	bool canInput{ true };//是否可以输入
+	int AttackMode{};//当前的攻击模式
+	int ComboCount{};//连击计数
+	uint32_t StartComboTime{};//开始连击时间
+	static constexpr uint32_t ComboTime{ 900 };//连击时间
+	static constexpr int MAX_HP{ 100 };//最大血量
+	int Hp{ 100 };//当前血量
+	bool HitBoss{ false };
 
 	void CheckGround();
 	void Move(bool left, bool right);
 	void Jump();
+	void Attack();
 	bool isInPillar(SDL_Rect rect1);
-
-	static const int MAX_HP{ 100 };
-	int Hp{ 100 };
+	void InAttack();
+	void SetAllCanInput(bool CanInput);
+	void checkAttackHit();
 };
