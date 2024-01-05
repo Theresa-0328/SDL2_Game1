@@ -76,7 +76,7 @@ private:
 	void CheckGround();
 	void Move(bool left, bool right);
 	void Jump();
-	bool isInPillar(SDL_Rect rect1, SDL_Rect rect2);
+	bool isInPillar(SDL_Rect rect1);
 
 	static const int MAX_HP{ 100 };
 	int Hp{ 100 };

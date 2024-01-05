@@ -31,6 +31,14 @@ void Player::Render()
 
 	SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
 	SDL_RenderDrawRect(m_render, &PlayerCollision);
+
+	SDL_Rect r1{};
+	m_scenes->getPillarRectCollision(r1);
+	SDL_Rect ground{ r1.x,r1.y,r1.w,5 };
+	SDL_Rect player_bottom{ PlayerCollision.x,PlayerCollision.y + PlayerCollision.h - 1 ,PlayerCollision.w,5 };
+	SDL_SetRenderDrawColor(m_render, 255, 0, 0, 0xFF);
+	SDL_RenderDrawRect(m_render, &ground);
+	SDL_RenderDrawRect(m_render, &player_bottom);
 #endif // SHOW_Rect
 
 	currentTime = SDL_GetTicks();
@@ -160,7 +168,7 @@ Uint32 Player::fallCallback(Uint32 interval, void* param)
 		it->JumpCount = 0;
 		return 0;
 	}
-	else if (it->isInPillar(it->PlayerCollision, r1))
+	else if (it->isInPillar(r1))
 	{
 		it->current = it->idle2;
 		it->IsGround = true;
@@ -200,7 +208,7 @@ Uint32 Player::InPillarCallback(Uint32 interval, void* param)
 	Player* it{ static_cast<Player*>(param) };
 	SDL_Rect r1{};
 	it->m_scenes->getPillarRectCollision(r1);
-	if (!it->isInPillar(it->PlayerCollision, r1))
+	if (!it->isInPillar(r1))
 	{
 		SDL_AddTimer(100, Player::fallCallback, param);
 		return 0;
@@ -248,17 +256,14 @@ void Player::Jump()
 	}
 }
 
-bool Player::isInPillar(SDL_Rect rect1, SDL_Rect rect2)
+bool Player::isInPillar(SDL_Rect rect1)
 {
-	int topOfRect1 = rect1.y;
-	int bottomOfRect1 = rect1.y + rect1.h;
-	int topOfRect2 = rect2.y;
-	int bottomOfRect2 = rect2.y + rect2.h;
-	// 判断y轴是否相交
-	bool isYIntersect = (topOfRect1 >= topOfRect2 && topOfRect1 <= bottomOfRect2) ||
-		(bottomOfRect1 >= topOfRect2 && bottomOfRect1 <= bottomOfRect2);
-	// 判断x轴是否相交
-	bool isXIntersect = (rect1.x >= rect2.x && rect1.x <= rect2.x + rect2.w) ||
-		(rect1.x + rect1.w >= rect2.x && rect1.x + rect1.w <= rect2.x + rect2.w);
-	return isYIntersect && isXIntersect;
+	SDL_Rect player_bottom{ PlayerCollision.x,PlayerCollision.y + PlayerCollision.h - 1 ,PlayerCollision.w,5 };
+	SDL_Rect ground{ rect1.x,rect1.y,rect1.w,5 };
+	if (SDL_HasIntersection(&player_bottom, &ground))
+	{
+		player_bottom.y = 430;
+		return true;
+	}
+	return false;
 }
