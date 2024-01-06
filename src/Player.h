@@ -19,6 +19,7 @@ public:
 	void Init(UI* ui, Scenes* s, Boss* b);
 	void setHp(int hp);
 	int getHp() const;
+	void BeHit();
 	SDL_Rect PlayerCollision{ 606, 536, 58, 87 };
 private:
 	SDL_Renderer* m_render;
@@ -71,8 +72,10 @@ private:
 	Uint32 static Attack1Callback(Uint32 interval, void* param);
 	Uint32 static Attack2Callback(Uint32 interval, void* param);
 	Uint32 static SlidCallback(Uint32 interval, void* param);
+	Uint32 static BeHitCallback(Uint32 interval, void* param);
 	SDL_TimerID myTimerID = 0;
 
+	bool IsRender{ true };// 是否渲染玩家角色
 	bool IsGround{ true };//判断能否跳跃
 	bool IsJump{ false };//判断是否在空中
 	static const int JumpMax{ 2 };//最大跳跃数
@@ -84,13 +87,21 @@ private:
 	int ComboCount{};//连击计数
 	uint32_t StartComboTime{};//开始连击时间
 	uint32_t ComboTime{ 900 };//连击时间
-	uint32_t MAX_HP{ 100 };//最大血量
+	int MAX_HP{ 100 };//最大血量
 	int Hp{ 100 };//当前血量
 	bool HitBoss{ false };
 	bool IsSliding{ false };
 	uint32_t SlidTime{};//冲刺时间
 	uint32_t SlidCountTime{};//冲刺计时器
 	uint32_t SlidCd{ 3000 };//冲刺Cd
+	bool IsHit{ false };//是否处于被攻击状态
+	bool IsDefend{ false };//是否处于无敌状态
+	bool IsDisplay;//闪烁中的开关
+	uint32_t StartDefendTime{};//开始无敌时间
+	uint32_t DefendTime{ 2500 };//无敌时间
+	uint32_t FlashTep{};//闪烁计时器
+	uint32_t FlashingTime{ 300 };//闪烁间隔
+
 	std::function<void(int)> movefunction{};
 
 	void CheckGround();
@@ -102,5 +113,5 @@ private:
 	void SetAllCanInput(bool CanInput);
 	void checkAttackHit();
 	void StartSliding();
-
+	void Defend();//无敌状态
 };

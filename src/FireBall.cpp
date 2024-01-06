@@ -139,6 +139,7 @@ void FireBall::checkExplosion()
 			it.index = 0;
 			m_player->setHp(-10);
 			m_ui->setPlayerHpValue(m_player->getHp());
+			m_player->BeHit();
 		}
 		if (SDL_HasIntersection(&r1, &sRect))
 		{

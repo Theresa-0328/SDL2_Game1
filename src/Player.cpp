@@ -16,14 +16,19 @@ Player::~Player()
 
 void Player::Render()
 {
+	if (!IsRender)
+	{
+		goto end;
+	}
 	if (human_index >= current.size())
 	{
 		human_index = 0;
 	}
-
-	SDL_Rect sRect = { current[human_index].second * widthSpr, current[human_index].first * heightSpr, widthSpr, heightSpr };
-	SDL_RenderCopyEx(m_render, player2, &sRect, &player2_img_rect, 0, nullptr, human_flip);
-
+	{
+		SDL_Rect sRect = { current[human_index].second * widthSpr, current[human_index].first * heightSpr, widthSpr, heightSpr };
+		SDL_RenderCopyEx(m_render, player2, &sRect, &player2_img_rect, 0, nullptr, human_flip);
+	}
+end:
 #ifdef SHOW_Rect
 	SDL_SetRenderDrawColor(m_render, 0, 0, 255, 0xFF);
 	SDL_RenderDrawRect(m_render, &player2_img_rect);
@@ -65,6 +70,7 @@ void Player::Update()
 		SetAllCanInput(false);
 	}
 	InAttack();
+	Defend();
 	//CheckGround();
 }
 
@@ -75,12 +81,17 @@ void Player::setKeyboard(bool left, bool right, bool J, bool Space1, bool Space2
 		current = die;
 		return;
 	}
+	if (IsHit)
+	{
+		return;
+	}
 	if (current != attack1 && current != attack2 && current != jump && current != fall && current != slide)
 	{
 		current = idle2;
 		Move(left, right);
 	}
-	if (Space1 && b1)
+	//Temp
+	if (current != slide && Space1 && b1)
 	{
 		Jump();
 		b1 = false;
@@ -92,6 +103,10 @@ void Player::setKeyboard(bool left, bool right, bool J, bool Space1, bool Space2
 	if (IsGround == true && J)
 	{
 		Attack();
+	}
+	else if (!J && canInput)
+	{
+		SetAllCanInput(true);
 	}
 	if (K)
 	{
@@ -233,7 +248,6 @@ Uint32 Player::Attack1Callback(Uint32 interval, void* param)
 	{
 		it->canInput = true;
 		it->current = it->idle2;
-		it->SetAllCanInput(true);
 		return 0;
 	}
 	return 16;
@@ -248,7 +262,6 @@ Uint32 Player::Attack2Callback(Uint32 interval, void* param)
 	{
 		it->canInput = true;
 		it->current = it->idle2;
-		it->SetAllCanInput(true);
 		return 0;
 	}
 	return 16;
@@ -414,4 +427,56 @@ Uint32 Player::SlidCallback(Uint32 interval, void* param)
 	}
 	it->movefunction(6);
 	return 16;
+}
+
+Uint32 Player::BeHitCallback(Uint32 interval, void* param)
+{
+	Player* it{ static_cast<Player*>(param) };
+	it->IsHit = false;
+	it->IsDefend = true;
+	it->current = it->idle2;
+	it->StartDefendTime = SDL_GetTicks() + it->DefendTime;
+	it->FlashTep = SDL_GetTicks() + it->FlashingTime;
+	it->SetAllCanInput(true);
+	return 0;
+}
+
+void Player::BeHit()
+{
+	IsHit = true;
+	current = hurt;
+	SetAllCanInput(false);
+	SDL_AddTimer(600, Player::BeHitCallback, this);
+}
+
+void Player::Defend()
+{
+	if (!IsDefend)
+	{
+		return;
+	}
+	if (StartDefendTime > SDL_GetTicks())
+	{
+		if (FlashTep > SDL_GetTicks())
+		{
+			return;
+		}
+		if (IsDisplay)
+		{
+			IsRender = false;
+			IsDisplay = false;
+		}
+		else
+		{
+			IsRender = true;
+			IsDisplay = true;
+		}
+		FlashTep = SDL_GetTicks() + FlashingTime;
+	}
+	else
+	{
+		IsDefend = false;
+		IsDisplay = true;
+		IsRender = true;
+	}
 }
