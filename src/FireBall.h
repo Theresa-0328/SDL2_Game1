@@ -22,6 +22,8 @@ public:
 	void Update();
 	void Start();
 	void setKeyboard(bool left, bool right);
+	void leftShiftFireBall(int offset = 0);
+	void rightShiftFireBall(int offset = 0);
 private:
 	SDL_Renderer* m_render;
 	Player* m_player;
@@ -78,10 +80,6 @@ private:
 
 	std::shared_ptr<SDL_Texture> Explosion_img;
 	const std::vector<int> Explosion{ 0, 0, 1, 2, 3, 4, 5 ,6 };
-
-	void leftShiftFireBall();
-	void rightShiftFireBall();
-
 	void addFireBall(int num = 7);
 	int waves{ 0 };
 };

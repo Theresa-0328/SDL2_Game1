@@ -56,7 +56,7 @@ void FirePillar::Render()
 			SDL_RenderCopyEx(m_render, FirePillar_img.get(), &rect1, &FBSGroup[i]->Location, 0, nullptr, flip);
 		}
 #ifdef SHOW_Rect
-		SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
+		SDL_SetRenderDrawColor(m_render, 0, 0, 255, 0xFF);
 		SDL_RenderDrawRect(m_render, &FBSGroup[i]->Location);
 #endif
 		FBSGroup[i]->updateIndex();
@@ -174,18 +174,18 @@ void FirePillar::setKeyboard(bool left, bool right)
 	}
 }
 
-void FirePillar::leftShiftFirePillar()
+void FirePillar::leftShiftFirePillar(int offset)
 {
 	for (auto& it : FBSGroup)
 	{
-		it->Location.x += 4;
+		it->Location.x += 4 + offset;
 	}
 }
 
-void FirePillar::rightShiftFirePillar()
+void FirePillar::rightShiftFirePillar(int offset)
 {
 	for (auto& it : FBSGroup)
 	{
-		it->Location.x -= 4;
+		it->Location.x -= 4 + offset;
 	}
 }

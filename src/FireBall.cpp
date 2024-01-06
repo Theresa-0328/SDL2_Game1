@@ -148,19 +148,19 @@ void FireBall::checkExplosion()
 	}
 }
 
-void FireBall::leftShiftFireBall()
+void FireBall::leftShiftFireBall(int offset)
 {
 	for (auto& it : FBSGroup)
 	{
-		it.FireBallLocation.x += 4;
+		it.FireBallLocation.x += 4 + offset;
 	}
 }
 
-void FireBall::rightShiftFireBall()
+void FireBall::rightShiftFireBall(int offset)
 {
 	for (auto& it : FBSGroup)
 	{
-		it.FireBallLocation.x -= 4;
+		it.FireBallLocation.x -= 4 + offset;
 	}
 }
 

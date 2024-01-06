@@ -21,6 +21,8 @@ public:
 	void setSkyState(bool isblack);
 	void setPillarHide();
 	void getPillarRectCollision(SDL_Rect& r1);
+	void leftShiftScene(int offset = 0);
+	void rightShiftScene(int offset = 0);
 private:
 	SDL_Renderer* m_render;
 	int renderW{};
@@ -70,8 +72,6 @@ private:
 
 	void SetBlackSkyAlpha();
 	int BlackSkyAlpha{ 0 };
-	void leftShiftScene();
-	void rightShiftScene();
 
 	SDL_Rect PillarRect1_Collision{ 0, 430, 96, 50 };
 	std::unordered_map<int, SDL_Rect>Collision{};

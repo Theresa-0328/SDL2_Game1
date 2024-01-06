@@ -38,6 +38,12 @@ Scenes::~Scenes()
 	SDL_DestroyTexture(tileset_sliced);
 	SDL_DestroyTexture(blackSky);
 	SDL_DestroyTexture(background);
+	SDL_DestroyTexture(stone2);
+	SDL_DestroyTexture(bush_large);
+	SDL_DestroyTexture(statue);
+	SDL_DestroyTexture(stone4);
+	SDL_DestroyTexture(tree2);
+	SDL_DestroyTexture(tree3);
 }
 
 void Scenes::RenderBackground()
@@ -118,44 +124,44 @@ void Scenes::setKeyboard(bool left, bool right)
 	}
 }
 
-void Scenes::leftShiftScene()
+void Scenes::leftShiftScene(int offset)
 {
 	if (backgroundx < -10)
 	{
-		backgroundx += 1;
+		backgroundx += 1 + offset;
 	}
-	mountains_move -= 2;
-	graveyard_move -= 3;
-	tileset_sliced_move -= 4;
+	mountains_move -= 2 + offset;
+	graveyard_move -= 3 + offset;
+	tileset_sliced_move -= 4 + offset;
 
-	Pillar_move += 4;
+	Pillar_move += 4 + offset;
 
-	tree3Rect.x += 4;
-	stone2Rect.x += 4;
-	bush_largeRect.x += 4;
-	statueRect.x += 4;
-	stone4Rect.x += 4;
-	tree2Rect.x += 4;
+	tree3Rect.x += 4 + offset;
+	stone2Rect.x += 4 + offset;
+	bush_largeRect.x += 4 + offset;
+	statueRect.x += 4 + offset;
+	stone4Rect.x += 4 + offset;
+	tree2Rect.x += 4 + offset;
 }
 
-void Scenes::rightShiftScene()
+void Scenes::rightShiftScene(int offset)
 {
 	if (backgroundx > -885)
 	{
-		backgroundx -= 1;
+		backgroundx -= 1 + offset;
 	}
-	mountains_move += 2;
-	graveyard_move += 3;
-	tileset_sliced_move += 4;
+	mountains_move += 2 + offset;
+	graveyard_move += 3 + offset;
+	tileset_sliced_move += 4 + offset;
 
-	Pillar_move -= 4;
+	Pillar_move -= 4 + offset;
 
-	tree3Rect.x -= 4;
-	stone2Rect.x -= 4;
-	bush_largeRect.x -= 4;
-	statueRect.x -= 4;
-	stone4Rect.x -= 4;
-	tree2Rect.x -= 4;
+	tree3Rect.x -= 4 + offset;
+	stone2Rect.x -= 4 + offset;
+	bush_largeRect.x -= 4 + offset;
+	statueRect.x -= 4 + offset;
+	stone4Rect.x -= 4 + offset;
+	tree2Rect.x -= 4 + offset;
 }
 
 void Scenes::setSkyState(bool isblack)

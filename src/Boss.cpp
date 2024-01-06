@@ -237,14 +237,26 @@ void Boss::BeHitProccess()
 	}
 }
 
-void Boss::leftShiftBoss()
+void Boss::leftShiftBoss(int offset)
 {
-	bossLocation.x += 4;
+	bossLocation.x += 4 + offset;
 }
 
-void Boss::rightShiftBoss()
+void Boss::rightShiftBoss(int offset)
 {
-	bossLocation.x -= 4;
+	bossLocation.x -= 4 + offset;
+}
+
+void Boss::leftShiftskill(int offset)
+{
+	m_fireBall->leftShiftFireBall(offset);
+	m_firePillar->leftShiftFirePillar(offset);
+}
+
+void Boss::rightShiftskill(int offset)
+{
+	m_fireBall->rightShiftFireBall(offset);
+	m_firePillar->rightShiftFirePillar(offset);
 }
 
 void Boss::UpdateBossHp()

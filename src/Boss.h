@@ -38,6 +38,10 @@ public:
 	void setFireCanInput(bool isCanInput);
 	void setHp(int hp);
 	int getHp() const;
+	void leftShiftBoss(int offset = 0);
+	void rightShiftBoss(int offset = 0);
+	void leftShiftskill(int offset = 0);
+	void rightShiftskill(int offset = 0);
 private:
 	bool isDead{ false };
 	bool isHit{ false };
@@ -91,10 +95,6 @@ private:
 	uint64_t DashSkillTime{};
 	uint64_t IdleTime{ 2500 + SDL_GetTicks() };
 	uint64_t FirePillarCd{ SDL_GetTicks() + 15000 };
-
-	void leftShiftBoss();
-	void rightShiftBoss();
-
 	static const int MAX_HP{ 100 };
 	int Hp{ 100 };
 	void UpdateBossHp();

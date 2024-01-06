@@ -12,7 +12,6 @@ Player::Player(SDL_Renderer* render)
 
 Player::~Player()
 {
-
 }
 
 void Player::Render()
@@ -69,14 +68,14 @@ void Player::Update()
 	//CheckGround();
 }
 
-void Player::setKeyboard(bool left, bool right, bool J, bool Space1, bool Space2)
+void Player::setKeyboard(bool left, bool right, bool J, bool Space1, bool Space2, bool K)
 {
 	if (isDead)
 	{
 		current = die;
 		return;
 	}
-	if (current != attack1 && current != attack2 && current != jump && current != fall)
+	if (current != attack1 && current != attack2 && current != jump && current != fall && current != slide)
 	{
 		current = idle2;
 		Move(left, right);
@@ -93,6 +92,10 @@ void Player::setKeyboard(bool left, bool right, bool J, bool Space1, bool Space2
 	if (IsGround == true && J)
 	{
 		Attack();
+	}
+	if (K)
+	{
+		StartSliding();
 	}
 }
 
@@ -363,4 +366,52 @@ void Player::checkAttackHit()
 		m_boss->setHp(-10);
 		m_ui->setBossHpValue(m_boss->getHp());
 	}
+}
+
+void Player::StartSliding()
+{
+	if (IsSliding || SlidTime > SDL_GetTicks())
+	{
+		std::cout << "Remaining cooldown time for Slide Tackle skill : " << SlidTime - SDL_GetTicks() << std::endl;
+		return;
+	}
+	SlidTime = SDL_GetTicks() + SlidCd;
+	current = slide;
+	IsSliding = true;
+	human_index = 0;
+	SetAllCanInput(false);
+	if (!human_flip)
+	{
+		movefunction = [&](int i)
+			{
+				m_scenes->rightShiftScene(i);
+				m_boss->rightShiftBoss(i);
+				m_boss->rightShiftskill(i);
+			};
+	}
+	else
+	{
+		movefunction = [&](int i)
+			{
+				m_scenes->leftShiftScene(i);
+				m_boss->leftShiftBoss(i);
+				m_boss->leftShiftskill(i);
+			};
+	}
+	SDL_AddTimer(16, Player::SlidCallback, this);
+}
+
+Uint32 Player::SlidCallback(Uint32 interval, void* param)
+{
+	Player* it{ static_cast<Player*>(param) };
+	if (it->human_index == 4)
+	{
+		it->canInput = true;
+		it->IsSliding = false;
+		it->current = it->idle2;
+		it->SetAllCanInput(true);
+		return 0;
+	}
+	it->movefunction(6);
+	return 16;
 }

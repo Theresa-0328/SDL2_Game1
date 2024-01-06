@@ -6,9 +6,9 @@
 #include <thread>
 
 #include <stdlib.h>
-#include <crtdbg.h>
 
 #ifdef _WIN32
+#include <crtdbg.h>
 #include <Windows.h>
 #endif // WIN32
 
@@ -52,4 +52,5 @@ private:
 	bool k_J{};
 	bool k_space_down{};
 	bool k_space_up{};
+	bool k_k{};
 };

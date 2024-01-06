@@ -69,6 +69,11 @@ bool Application::ProcessMessage()
 	{
 		switch (event.key.keysym.sym)
 		{
+		case SDLK_ESCAPE:
+		{
+			quit = true;
+			return false;
+		}
 		case SDLK_LEFT:
 		{
 			k_left = true;
@@ -87,6 +92,11 @@ bool Application::ProcessMessage()
 		case SDLK_w: /*tigerHeady -= 1;*/ break;
 		case SDLK_s: /*tigerHeady += 1;*/ break;
 		case SDLK_j: k_J = true; break;
+		case SDLK_k:
+		{
+			k_k = true;
+			break;
+		}
 		case SDLK_SPACE:
 		{
 			k_space_down = true;
@@ -120,6 +130,11 @@ bool Application::ProcessMessage()
 		case SDLK_w: /*tigerHeady -= 1;*/ break;
 		case SDLK_s: /*tigerHeady += 1;*/ break;
 		case SDLK_j: k_J = false; break;
+		case SDLK_k:
+		{
+			k_k = false;
+			break;
+		}
 		case SDLK_SPACE:
 		{
 			k_space_up = true;
@@ -148,7 +163,7 @@ void Application::init()
 void Application::update()
 {
 	m_scenes->setKeyboard(k_left, k_right);
-	m_player->setKeyboard(k_left, k_right, k_J, k_space_down, k_space_up);
+	m_player->setKeyboard(k_left, k_right, k_J, k_space_down, k_space_up, k_k);
 	m_boss->setKeyboard(k_left, k_right);
 	m_fireball->setKeyboard(k_left, k_right);
 	m_firepillar->setKeyboard(k_left, k_right);

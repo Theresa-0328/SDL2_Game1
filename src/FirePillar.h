@@ -21,6 +21,8 @@ public:
 	void Render();
 	void Update(Boss* boss);
 	void setKeyboard(bool left, bool right);
+	void leftShiftFirePillar(int offset = 0);
+	void rightShiftFirePillar(int offset = 0);
 private:
 	SDL_Renderer* m_render;
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
@@ -81,9 +83,5 @@ private:
 	int Speed{ 0 };
 	void addFirePillar(int num = 7);
 	int waves{ 0 };
-
-	void leftShiftFirePillar();
-	void rightShiftFirePillar();
-
 	Boss* m_boss{};
 };

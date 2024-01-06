@@ -1,11 +1,12 @@
 ﻿#pragma once
 #include <vector>
+#include <functional>
 
 #include <SDL.h>
 #include <SDL_image.h>
 
-#include "Scenes.h"
 #include "Boss.h"
+#include "Scenes.h"
 
 class Player
 {
@@ -14,7 +15,7 @@ public:
 	~Player();
 	void Render();
 	void Update();
-	void setKeyboard(bool left, bool right, bool J, bool Space1, bool Space2);
+	void setKeyboard(bool left, bool right, bool J, bool Space1, bool Space2, bool K);
 	void Init(UI* ui, Scenes* s, Boss* b);
 	void setHp(int hp);
 	int getHp() const;
@@ -42,7 +43,6 @@ private:
 	int human_spriteChangeTime = human_currentTime + human_maxDuration;
 
 	SDL_RendererFlip human_flip = SDL_FLIP_NONE;
-
 	std::vector<std::pair<int, int>> idle1{ {0, 0}, {0, 1}, {0, 2}, {0, 3} };
 	std::vector<std::pair<int, int>> crouch{ {0, 4}, {0, 5}, {0, 6}, {1, 0} };
 	std::vector<std::pair<int, int>> run{ {1, 1}, {1, 2}, {1, 3}, {1, 4}, {1, 5}, {1, 6} };
@@ -57,7 +57,7 @@ private:
 	std::vector<std::pair<int, int>> attack1{ {6, 0}, {6, 1}, {6, 2}, {6, 3}, {6, 4} };
 	std::vector<std::pair<int, int>> attack2{ {6, 5}, {6, 6}, {7, 0}, {7, 1}, {7, 2}, {7, 3} };
 	std::vector<std::pair<int, int>> attack3{ {7, 4}, {7, 5}, {7, 6}, {8, 0}, {8, 1}, {8, 2} };
-	std::vector<std::pair<int, int>> attack4{ {6, 0}, {6, 1}, {6, 2}, {6, 3}, {6, 4},{6, 5}, {6, 6}, {7, 0}, {7, 1}, {7, 2}, {7, 3} };
+	//std::vector<std::pair<int, int>> attack4{ {6, 0}, {6, 1}, {6, 2}, {6, 3}, {6, 4},{6, 5}, {6, 6}, {7, 0}, {7, 1}, {7, 2}, {7, 3} };
 	std::vector<std::pair<int, int>> hurt{ {8, 3}, {8, 4}, {8, 5} };
 	std::vector<std::pair<int, int>> die{ {8, 6}, {9, 0}, {9, 1}, {9, 2}, {9, 3}, {9, 4}, {9, 5} };
 	std::vector<std::pair<int, int>> jump2{ {9, 6}, {10, 0}, {10, 1} };
@@ -70,6 +70,7 @@ private:
 	Uint32 static InPillarCallback(Uint32 interval, void* param);
 	Uint32 static Attack1Callback(Uint32 interval, void* param);
 	Uint32 static Attack2Callback(Uint32 interval, void* param);
+	Uint32 static SlidCallback(Uint32 interval, void* param);
 	SDL_TimerID myTimerID = 0;
 
 	bool IsGround{ true };//判断能否跳跃
@@ -82,10 +83,15 @@ private:
 	int AttackMode{};//当前的攻击模式
 	int ComboCount{};//连击计数
 	uint32_t StartComboTime{};//开始连击时间
-	static constexpr uint32_t ComboTime{ 900 };//连击时间
-	static constexpr int MAX_HP{ 100 };//最大血量
+	uint32_t ComboTime{ 900 };//连击时间
+	uint32_t MAX_HP{ 100 };//最大血量
 	int Hp{ 100 };//当前血量
 	bool HitBoss{ false };
+	bool IsSliding{ false };
+	uint32_t SlidTime{};//冲刺时间
+	uint32_t SlidCountTime{};//冲刺计时器
+	uint32_t SlidCd{ 3000 };//冲刺Cd
+	std::function<void(int)> movefunction{};
 
 	void CheckGround();
 	void Move(bool left, bool right);
@@ -95,4 +101,6 @@ private:
 	void InAttack();
 	void SetAllCanInput(bool CanInput);
 	void checkAttackHit();
+	void StartSliding();
+
 };
