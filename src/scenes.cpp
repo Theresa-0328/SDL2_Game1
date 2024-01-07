@@ -70,13 +70,11 @@ void Scenes::RenderBackground()
 		SetBlackSkyAlpha();
 		SDL_RenderCopy(m_render, blackSky, 0, 0);
 	}
-
-	SDL_Rect Pillar_sRect{ 224 ,48,32,96 };
+	static const SDL_Rect Pillar_sRect{ 224 ,48,32,96 };
 	SDL_Rect PillarRect1{ Pillar_move, 430, Pillar_sRect.w * 3, Pillar_sRect.h * 3 };
 	SDL_RenderCopy(m_render, tileset_sliced, &Pillar_sRect, &PillarRect1);
 	SDL_Rect PillarRect2{ Pillar_move - 540, 430, Pillar_sRect.w * 3, Pillar_sRect.h * 3 };
 	SDL_RenderCopy(m_render, tileset_sliced, &Pillar_sRect, &PillarRect2);
-	PillarRect1_Collision.x = Pillar_move;
 
 	SDL_RenderCopy(m_render, tree3, 0, &tree3Rect);
 	SDL_RenderCopy(m_render, stone2, 0, &stone2Rect);
@@ -85,9 +83,17 @@ void Scenes::RenderBackground()
 	SDL_RenderCopy(m_render, stone4, 0, &stone4Rect);
 	SDL_RenderCopy(m_render, tree2, 0, &tree2Rect);
 
+	ScenesCollision[1].x = Pillar_move;
+	ScenesCollision[2].x = Pillar_move - 540;
 #ifdef SHOW_Rect
 	SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
-	SDL_RenderDrawRect(m_render, &PillarRect1_Collision);
+	SDL_RenderDrawRect(m_render, &ScenesCollision[1]);
+	SDL_RenderDrawRect(m_render, &ScenesCollision[2]);
+
+	std::vector<SDL_Rect> c{ getGroundCollision() };
+	SDL_SetRenderDrawColor(m_render, 255, 0, 0, 0xFF);
+	SDL_RenderDrawRect(m_render, &c[1]);
+	SDL_RenderDrawRect(m_render, &c[2]);
 #endif // SHOW_Rect
 }
 
@@ -103,7 +109,11 @@ void Scenes::RenderForeground()
 
 #ifdef SHOW_Rect
 	SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
-	SDL_RenderDrawRect(m_render, &GroundCollision);
+	SDL_RenderDrawRect(m_render, &ScenesCollision[0]);
+
+	std::vector<SDL_Rect> c{ getGroundCollision() };
+	SDL_SetRenderDrawColor(m_render, 255, 0, 0, 0xFF);
+	SDL_RenderDrawRect(m_render, &c[0]);
 #endif // SHOW_Rect
 
 }
@@ -175,9 +185,19 @@ void Scenes::setPillarHide()
 
 }
 
-void Scenes::getPillarRectCollision(SDL_Rect& r1)
+std::vector<SDL_Rect> Scenes::getScenesCollision()const
 {
-	r1 = PillarRect1_Collision;
+	return ScenesCollision;
+}
+
+std::vector<SDL_Rect> Scenes::getGroundCollision()
+{
+	std::vector<SDL_Rect> Ground;
+	for (auto& it : ScenesCollision)
+	{
+		Ground.push_back({ it.x, it.y,it.w,5 });
+	}
+	return Ground;
 }
 
 void Scenes::SetBlackSkyAlpha()

@@ -36,12 +36,8 @@ end:
 	SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
 	SDL_RenderDrawRect(m_render, &PlayerCollision);
 
-	SDL_Rect r1{};
-	m_scenes->getPillarRectCollision(r1);
-	SDL_Rect ground{ r1.x,r1.y,r1.w,5 };
 	SDL_Rect player_bottom{ PlayerCollision.x,PlayerCollision.y + PlayerCollision.h - 1 ,PlayerCollision.w,5 };
 	SDL_SetRenderDrawColor(m_render, 255, 0, 0, 0xFF);
-	SDL_RenderDrawRect(m_render, &ground);
 	SDL_RenderDrawRect(m_render, &player_bottom);
 #endif // SHOW_Rect
 
@@ -155,6 +151,11 @@ Uint32 Player::jump1Callback(Uint32 interval, void* param)
 	Player* it{ static_cast<Player*>(param) };
 	it->player2_img_rect.y -= 4;
 	it->PlayerCollision.y -= 4;
+	if (it->IsHit)
+	{
+		it->myTimerID = SDL_AddTimer(100, Player::fallCallback, param);
+		return 0;
+	}
 	if (it->PlayerCollision.y <= 400)
 	{
 		it->player2_img_rect.y += 1;
@@ -177,8 +178,7 @@ Uint32 Player::fallCallback(Uint32 interval, void* param)
 	it->current = it->fall;
 	it->player2_img_rect.y += 5;
 	it->PlayerCollision.y += 5;
-	SDL_Rect r1{};
-	it->m_scenes->getPillarRectCollision(r1);
+	std::vector<SDL_Rect> c{ it->m_scenes->getGroundCollision() };
 	if (it->PlayerCollision.y >= 400)
 	{
 		it->player2_img_rect.y += 1;
@@ -191,7 +191,15 @@ Uint32 Player::fallCallback(Uint32 interval, void* param)
 		it->JumpCount = 0;
 		return 0;
 	}
-	else if (it->isInPillar(r1))
+	else if (it->isInPillar(c[1]))
+	{
+		it->current = it->idle2;
+		it->IsGround = true;
+		it->JumpCount = 0;
+		it->myTimerID = SDL_AddTimer(100, Player::InPillarCallback, param);
+		return 0;
+	}
+	else if (it->isInPillar(c[2]))
 	{
 		it->current = it->idle2;
 		it->IsGround = true;
@@ -210,6 +218,11 @@ Uint32 Player::jump2Callback(Uint32 interval, void* param)
 	Player* it{ static_cast<Player*>(param) };
 	it->player2_img_rect.y -= 4;
 	it->PlayerCollision.y -= 4;
+	if (it->IsHit)
+	{
+		it->myTimerID = SDL_AddTimer(100, Player::fallCallback, param);
+		return 0;
+	}
 	if (it->PlayerCollision.y <= 400)
 	{
 		it->PlayerCollision.y += 1;
@@ -229,9 +242,8 @@ Uint32 Player::jump2Callback(Uint32 interval, void* param)
 Uint32 Player::InPillarCallback(Uint32 interval, void* param)
 {
 	Player* it{ static_cast<Player*>(param) };
-	SDL_Rect r1{};
-	it->m_scenes->getPillarRectCollision(r1);
-	if (!it->isInPillar(r1))
+	std::vector<SDL_Rect> c{ it->m_scenes->getGroundCollision() };
+	if (!it->isInPillar(c[1]) && !it->isInPillar(c[2]))
 	{
 		SDL_AddTimer(100, Player::fallCallback, param);
 		it->IsGround = false;

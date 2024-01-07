@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include <unordered_map>
+#include <unordered_set>
 #include <string>
 
 #include <SDL.h>
@@ -20,7 +21,8 @@ public:
 	void setKeyboard(bool left, bool right);
 	void setSkyState(bool isblack);
 	void setPillarHide();
-	void getPillarRectCollision(SDL_Rect& r1);
+	std::vector<SDL_Rect> getScenesCollision()const;
+	std::vector<SDL_Rect> getGroundCollision();
 	void leftShiftScene(int offset = 0);
 	void rightShiftScene(int offset = 0);
 private:
@@ -73,6 +75,5 @@ private:
 	void SetBlackSkyAlpha();
 	int BlackSkyAlpha{ 0 };
 
-	SDL_Rect PillarRect1_Collision{ 0, 430, 96, 50 };
-	std::unordered_map<int, SDL_Rect>Collision{};
+	std::vector<SDL_Rect>ScenesCollision{ { 0, 625, 1280,87 } , { 940, 430, 96, 50 }, { 408, 430, 96, 50 } };
 };

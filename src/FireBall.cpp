@@ -119,24 +119,21 @@ void FireBall::Update()
 
 void FireBall::checkExplosion()
 {
-	SDL_Rect r1{};
-	m_scenes->getPillarRectCollision(r1);
+	std::vector<SDL_Rect> c{ m_scenes->getScenesCollision() };
 	for (auto& it : FBSGroup)
 	{
 		if (it.boom)
 		{
 			continue;
 		}
-		SDL_Rect sRect = { it.FireBallLocation.x + 80,  it.FireBallLocation.y + 70, 55,55 };
-		if (SDL_HasIntersection(&GroundCollision, &sRect))
+		SDL_Rect sRect{ it.FireBallLocation.x + 80,  it.FireBallLocation.y + 70, 55,55 };
+		for (const auto& it1 : c)
 		{
-			it.boom = true;
-			it.index = 0;
-		}
-		if (SDL_HasIntersection(&r1, &sRect))
-		{
-			it.boom = true;
-			it.index = 0;
+			if (SDL_HasIntersection(&it1, &sRect))
+			{
+				it.boom = true;
+				it.index = 0;
+			}
 		}
 		if (SDL_HasIntersection(&m_player->PlayerCollision, &sRect))
 		{
