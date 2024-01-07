@@ -21,6 +21,7 @@ public:
 	int getHp() const;
 	void BeHit();
 	SDL_Rect PlayerCollision{ 606, 536, 58, 87 };
+	bool getDefendState() const;
 private:
 	SDL_Renderer* m_render;
 	Scenes* m_scenes{};
@@ -96,7 +97,7 @@ private:
 	uint32_t SlidCd{ 3000 };//冲刺Cd
 	bool IsHit{ false };//是否处于被攻击状态
 	bool IsDefend{ false };//是否处于无敌状态
-	bool IsDisplay;//闪烁中的开关
+	bool IsDisplay{ true };//闪烁中的开关
 	uint32_t StartDefendTime{};//开始无敌时间
 	uint32_t DefendTime{ 2500 };//无敌时间
 	uint32_t FlashTep{};//闪烁计时器

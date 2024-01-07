@@ -5,12 +5,15 @@
 #include <algorithm>
 
 #include "Boss.h"
+#include "Player.h"
 
 FirePillar::FirePillar(SDL_Renderer* render) :
 	m_render(render),
 	FirePillar_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Pillar/hell-beast-burn.png"), TextureDeleter),
 	FirePillar_explosion_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Pillar/explosion-4.png"), TextureDeleter),
-	FirePillar_move_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Pillar/fire-ball.png"), TextureDeleter)
+	FirePillar_move_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Pillar/fire-ball.png"), TextureDeleter),
+	m_player(nullptr),
+	m_ui(nullptr)
 {
 }
 
@@ -18,9 +21,11 @@ FirePillar::~FirePillar()
 {
 }
 
-void FirePillar::Init(Boss* boss)
+void FirePillar::Init(Boss* boss, Player* player, UI* ui)
 {
 	m_boss = boss;
+	m_player = player;
+	m_ui = ui;
 }
 
 void FirePillar::Start()
@@ -43,34 +48,40 @@ void FirePillar::Render()
 		if (FBSGroup[i]->state == FirePillar::FirePillarState::State::move)
 		{
 			SDL_Rect rect2{ 19 * FirePillar_move_vec[FBSGroup[i]->index],0,19,16 };
-			SDL_RenderCopyEx(m_render, FirePillar_move_img.get(), &rect2, &FBSGroup[i]->Location, 270, nullptr, flip);
+			SDL_RenderCopyEx(m_render, FirePillar_move_img.get(), &rect2, &FBSGroup[i]->Location, -90, nullptr, flip);
+			FBSGroup[i]->Collision = { FBSGroup[i]->Location.x + 20,FBSGroup[i]->Location.y + 8, 60,107 };
 		}
 		if (FBSGroup[i]->state == FirePillar::FirePillarState::State::explosion)
 		{
 			SDL_Rect rect1{ 128 * FirePillar_explosion_vec[FBSGroup[i]->index],0,128,128 };
 			SDL_RenderCopyEx(m_render, FirePillar_explosion_img.get(), &rect1, &FBSGroup[i]->Location, 0, nullptr, flip);
+			FBSGroup[i]->Collision = { FBSGroup[i]->Location.x + 66,FBSGroup[i]->Location.y + 30, 245,398 };
 		}
 		if (FBSGroup[i]->state == FirePillar::FirePillarState::State::pillar)
 		{
 			SDL_Rect rect1{ 74 * FirePillar_vec[FBSGroup[i]->index],0,74,160 };
 			SDL_RenderCopyEx(m_render, FirePillar_img.get(), &rect1, &FBSGroup[i]->Location, 0, nullptr, flip);
+			FBSGroup[i]->Collision = { FBSGroup[i]->Location.x + 28,FBSGroup[i]->Location.y, 225,645 };
 		}
 #ifdef SHOW_Rect
 		SDL_SetRenderDrawColor(m_render, 0, 0, 255, 0xFF);
 		SDL_RenderDrawRect(m_render, &FBSGroup[i]->Location);
+
+		SDL_SetRenderDrawColor(m_render, 255, 255, 0, 0xFF);
+		SDL_RenderDrawRect(m_render, &FBSGroup[i]->Collision);
 #endif
 		FBSGroup[i]->updateIndex();
 	}
 }
 
-void FirePillar::Update(Boss* boss)
+void FirePillar::Update()
 {
-	if (boss->getBossStart() == Boss::_Death)
+	if (m_boss->getBossStart() == Boss::_Death)
 	{
 		LifeTime = 0;
 		return;
 	}
-	if (boss->getBossStart() != Boss::BossState::_FirePillar)
+	if (m_boss->getBossStart() != Boss::BossState::_FirePillar)
 	{
 		return;
 	}
@@ -93,6 +104,7 @@ void FirePillar::Update(Boss* boss)
 		addFirePillar();
 		waves = 4;
 	}
+	checkExplosion();
 }
 
 void FirePillar::Move()
@@ -103,7 +115,7 @@ void FirePillar::Move()
 		if (Fp->state == FirePillar::FirePillarState::State::move)
 		{
 			Fp->Location.y += Speed;
-			Fp->Location.w = 128;
+			Fp->Location.w = 107;
 			Fp->Location.h = 128;
 			Fp->vec_size = FirePillar_move_vec.size();
 		}
@@ -136,6 +148,23 @@ void FirePillar::Move()
 			std::swap(FBSGroup[i], FBSGroup.back());
 			FBSGroup.pop_back();
 			delete Fp;
+		}
+	}
+}
+
+void FirePillar::checkExplosion()
+{
+	for (int i = 0; i < FBSGroup.size(); i++)
+	{
+		if (SDL_HasIntersection(&FBSGroup[i]->Collision, &m_player->PlayerCollision))
+		{
+			if (m_player->getDefendState())
+			{
+				continue;
+			}
+			m_player->setHp(-10);
+			m_ui->setPlayerHpValue(m_player->getHp());
+			m_player->BeHit();
 		}
 	}
 }

@@ -99,4 +99,6 @@ private:
 	int Hp{ 100 };
 	void UpdateBossHp();
 	void BeHit(int Damge);
+
+	void CheckDash();
 };

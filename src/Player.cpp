@@ -68,6 +68,7 @@ void Player::Update()
 	{
 		isDead = true;
 		SetAllCanInput(false);
+		return;
 	}
 	InAttack();
 	Defend();
@@ -433,8 +434,8 @@ Uint32 Player::BeHitCallback(Uint32 interval, void* param)
 {
 	Player* it{ static_cast<Player*>(param) };
 	it->IsHit = false;
-	it->IsDefend = true;
 	it->current = it->idle2;
+	it->human_maxDuration = 150;
 	it->StartDefendTime = SDL_GetTicks() + it->DefendTime;
 	it->FlashTep = SDL_GetTicks() + it->FlashingTime;
 	it->SetAllCanInput(true);
@@ -445,13 +446,20 @@ void Player::BeHit()
 {
 	IsHit = true;
 	current = hurt;
+	IsDefend = true;
 	SetAllCanInput(false);
-	SDL_AddTimer(600, Player::BeHitCallback, this);
+	human_maxDuration = 300;
+	SDL_AddTimer(800, Player::BeHitCallback, this);
+}
+
+bool Player::getDefendState() const
+{
+	return IsDefend;
 }
 
 void Player::Defend()
 {
-	if (!IsDefend)
+	if (!IsDefend || IsHit)
 	{
 		return;
 	}

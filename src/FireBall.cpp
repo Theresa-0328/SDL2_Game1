@@ -133,18 +133,22 @@ void FireBall::checkExplosion()
 			it.boom = true;
 			it.index = 0;
 		}
+		if (SDL_HasIntersection(&r1, &sRect))
+		{
+			it.boom = true;
+			it.index = 0;
+		}
 		if (SDL_HasIntersection(&m_player->PlayerCollision, &sRect))
 		{
+			if (m_player->getDefendState())
+			{
+				continue;
+			}
 			it.boom = true;
 			it.index = 0;
 			m_player->setHp(-10);
 			m_ui->setPlayerHpValue(m_player->getHp());
 			m_player->BeHit();
-		}
-		if (SDL_HasIntersection(&r1, &sRect))
-		{
-			it.boom = true;
-			it.index = 0;
 		}
 	}
 }

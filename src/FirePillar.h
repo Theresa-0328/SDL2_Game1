@@ -6,6 +6,7 @@
 
 #include "Scenes.h"
 #include "Deleter.hpp"
+#include "Ui.h"
 
 class Boss;
 class Player;
@@ -16,17 +17,18 @@ class FirePillar :
 public:
 	FirePillar(SDL_Renderer* render);
 	~FirePillar();
-	void Init(Boss* boss);
+	void Init(Boss* boss, Player* player, UI* ui);
 	void Start();
 	void Render();
-	void Update(Boss* boss);
+	void Update();
 	void setKeyboard(bool left, bool right);
 	void leftShiftFirePillar(int offset = 0);
 	void rightShiftFirePillar(int offset = 0);
 private:
 	SDL_Renderer* m_render;
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
-
+	Player* m_player;
+	UI* m_ui;
 	int LifeTime{};
 
 	std::shared_ptr<SDL_Texture> FirePillar_move_img;
@@ -37,10 +39,11 @@ private:
 	const std::array<int, 6> FirePillar_explosion_vec{ 0,1,2,3,4,5 };
 
 	void Move();
-
+	void checkExplosion();
 	struct FirePillarState
 	{
 		SDL_Rect Location{};
+		SDL_Rect Collision{};
 		enum State
 		{
 			move = 0,
@@ -55,7 +58,6 @@ private:
 		int currentTime{};
 		int maxDuration{ 100 };
 		int ChangeTime{ (int)SDL_GetTicks() + maxDuration };
-
 		FirePillarState(SDL_Rect l, State s) :
 			Location(l),
 			state(s),
@@ -63,7 +65,6 @@ private:
 			vec_size(0)
 		{
 		}
-
 		void updateIndex()
 		{
 			currentTime = SDL_GetTicks();

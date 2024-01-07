@@ -1,5 +1,7 @@
 ﻿#include "Boss.h"
 
+#include "Player.h"
+
 Boss::Boss(SDL_Renderer* render, Scenes* scenes)
 	:m_render(render),
 	Idle_img(IMG_LoadTexture(m_render, "assets/Boss/Worm/Idle.png"), TextureDeleter),
@@ -58,7 +60,7 @@ void Boss::update()
 {
 	UpdateBossState(m_boss_state);
 	UpdateBossHp();
-
+	CheckDash();
 	if (SDL_GetTicks() > 120000)
 	{
 		isDead = 1;
@@ -273,6 +275,27 @@ void Boss::BeHit(int Damge)
 {
 	Hp -= Damge;
 	isHit = true;
+}
+
+void Boss::CheckDash()
+{
+	if (m_boss_state != BossState::_Dash)
+	{
+		return;
+	}
+	SDL_Rect BossCollision = { bossLocation.x + 89, bossLocation.y + 132, 221,127 };
+	if (!SDL_HasIntersection(&BossCollision, &m_player->PlayerCollision))
+	{
+		return;
+	}
+	if (m_player->getDefendState())
+	{
+		return;
+	}
+	m_player->setHp(-10);
+	m_ui->setPlayerHpValue(m_player->getHp());
+	m_player->BeHit();
+
 }
 
 Boss::BossState Boss::getBossStart() const

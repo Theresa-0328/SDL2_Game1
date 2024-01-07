@@ -157,7 +157,7 @@ void Application::init()
 	m_boss->Init(m_ui.get(), m_player.get(), m_fireball.get(), m_firepillar.get());
 	m_player->Init(m_ui.get(), m_scenes.get(), m_boss.get());
 	m_fireball->Init(m_scenes.get(), m_ui.get(), m_boss.get(), m_player.get());
-	m_firepillar->Init(m_boss.get());
+	m_firepillar->Init(m_boss.get(), m_player.get(), m_ui.get());
 }
 
 void Application::update()
@@ -171,7 +171,7 @@ void Application::update()
 	m_player->Update();
 	m_boss->update();
 	m_fireball->Update();
-	m_firepillar->Update(m_boss.get());
+	m_firepillar->Update();
 }
 
 void Application::render()
