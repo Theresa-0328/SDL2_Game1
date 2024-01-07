@@ -74,6 +74,7 @@ private:
 	Uint32 static Attack2Callback(Uint32 interval, void* param);
 	Uint32 static SlidCallback(Uint32 interval, void* param);
 	Uint32 static BeHitCallback(Uint32 interval, void* param);
+	Uint32 static RepelCallback(Uint32 interval, void* param);
 	SDL_TimerID myTimerID = 0;
 
 	bool IsRender{ true };// 是否渲染玩家角色

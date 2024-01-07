@@ -442,6 +442,20 @@ Uint32 Player::BeHitCallback(Uint32 interval, void* param)
 	return 0;
 }
 
+Uint32 Player::RepelCallback(Uint32 interval, void* param)
+{
+	thread_local int i{ 0 };
+	Player* it{ static_cast<Player*>(param) };
+	if (i > 10)
+	{
+		i = 0;
+		return 0;
+	}
+	i++;
+	it->movefunction(1);
+	return 16;
+}
+
 void Player::BeHit()
 {
 	IsHit = true;
@@ -449,6 +463,25 @@ void Player::BeHit()
 	IsDefend = true;
 	SetAllCanInput(false);
 	human_maxDuration = 300;
+	if (!m_boss->flip)
+	{
+		movefunction = [&](int i)
+			{
+				m_scenes->rightShiftScene(i);
+				m_boss->rightShiftBoss(i);
+				m_boss->rightShiftskill(i);
+			};
+	}
+	else
+	{
+		movefunction = [&](int i)
+			{
+				m_scenes->leftShiftScene(i);
+				m_boss->leftShiftBoss(i);
+				m_boss->leftShiftskill(i);
+			};
+	}
+	SDL_AddTimer(16, Player::RepelCallback, this);
 	SDL_AddTimer(800, Player::BeHitCallback, this);
 }
 
