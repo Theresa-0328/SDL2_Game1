@@ -60,6 +60,7 @@ end:
 
 void Player::Update()
 {
+	CheckGround();
 	if (Hp <= 0)
 	{
 		isDead = true;
@@ -68,7 +69,6 @@ void Player::Update()
 	}
 	InAttack();
 	Defend();
-	CheckGround();
 }
 
 void Player::setKeyboard(bool left, bool right, bool J, bool Space1, bool Space2, bool K)
