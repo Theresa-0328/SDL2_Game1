@@ -114,11 +114,12 @@ void Player::setKeyboard(bool left, bool right, bool J, bool Space1, bool Space2
 	}
 }
 
-void Player::Init(UI* ui, Scenes* s, Boss* b)
+void Player::Init(UI* ui, Scenes* s, Boss* b, Audio* audio)
 {
 	m_scenes = s;
 	m_boss = b;
 	m_ui = ui;
+	m_audio = audio;
 }
 
 void Player::setHp(int hp)
@@ -333,6 +334,7 @@ void Player::checkAttackHit()
 	{
 		m_boss->setHp(-10);
 		m_ui->setBossHpValue(m_boss->getHp());
+		m_audio->PlayGameSound("Hit");
 	}
 }
 

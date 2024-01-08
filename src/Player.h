@@ -5,6 +5,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
+#include "Audio.h"
 #include "Boss.h"
 #include "Scenes.h"
 
@@ -16,7 +17,7 @@ public:
 	void Render();
 	void Update();
 	void setKeyboard(bool left, bool right, bool J, bool Space1, bool Space2, bool K);
-	void Init(UI* ui, Scenes* s, Boss* b);
+	void Init(UI* ui, Scenes* s, Boss* b, Audio* audio);
 	void setHp(int hp);
 	int getHp() const;
 	void BeHit();
@@ -27,7 +28,7 @@ private:
 	Scenes* m_scenes{};
 	Boss* m_boss{};
 	UI* m_ui{};
-
+	Audio* m_audio{};
 	SDL_Texture* player2;
 
 	int player2_x{ 565 };
@@ -39,7 +40,7 @@ private:
 	SDL_Rect player2_img_rect{ player2_x, player2_y, imgW, imgH };
 
 	int human_index = 0;
-	int human_maxDuration = 150;
+	int human_maxDuration = 100;
 	int human_currentTime = SDL_GetTicks();
 	int currentTime = SDL_GetTicks();
 	int human_spriteChangeTime = human_currentTime + human_maxDuration;

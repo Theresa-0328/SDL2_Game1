@@ -154,8 +154,11 @@ bool Application::ProcessMessage()
 
 void Application::init()
 {
+	audio.Init();
+	audio.LoadAudio();
+	audio.PlayGameBgm("Boss2");
 	m_boss->Init(m_ui.get(), m_player.get(), m_fireball.get(), m_firepillar.get());
-	m_player->Init(m_ui.get(), m_scenes.get(), m_boss.get());
+	m_player->Init(m_ui.get(), m_scenes.get(), m_boss.get(), &audio);
 	m_fireball->Init(m_scenes.get(), m_ui.get(), m_boss.get(), m_player.get());
 	m_firepillar->Init(m_boss.get(), m_player.get(), m_ui.get());
 }

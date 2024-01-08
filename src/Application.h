@@ -17,6 +17,7 @@
 #include "FireBall.h"
 #include "FirePillar.h"
 #include "Ui.h"
+#include "Audio.h"
 
 class Application
 {
@@ -39,6 +40,7 @@ private:
 	uint32_t gFPS{ 60 };
 	uint32_t gFPS_TIME{ 1000 / gFPS };
 	SDL_Event event{};
+	Audio audio{};
 
 	std::unique_ptr<Scenes> m_scenes;
 	std::unique_ptr<Player> m_player;
