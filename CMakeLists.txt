@@ -11,8 +11,9 @@ add_definitions(-DSHOW_Rect)
 add_subdirectory(src)
 add_subdirectory(3rdparty/SDL)
 add_subdirectory(3rdparty/SDL2_image)
+add_subdirectory(3rdparty/SDL_mixer)
 
-target_link_libraries(SDL2_Game1 PUBLIC SDL2::SDL2-static SDL2::SDL2main SDL2_image)
+target_link_libraries(SDL2_Game1 PUBLIC SDL2::SDL2-static SDL2::SDL2main SDL2_image  SDL2_mixer)
 
 if(MSVC)
     message("Using MSVC")

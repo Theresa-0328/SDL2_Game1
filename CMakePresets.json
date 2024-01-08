@@ -17,7 +17,11 @@
 				"SDL_STATIC": true,
 				"SDL2_DISABLE_INSTALL": true,
 				"SDL2IMAGE_SAMPLES": false,
-				"SDL2IMAGE_INSTALL": false
+				"SDL2IMAGE_INSTALL": false,
+				"SDL2MIXER_VENDORED": true,
+				"SDL2MIXER_INSTALL": false,
+				"SDL2MIXER_DEPS_SHARED": false
+
 			},
 			"condition": {
 				"type": "equals",
