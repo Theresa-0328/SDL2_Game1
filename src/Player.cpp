@@ -68,7 +68,7 @@ void Player::Update()
 	}
 	InAttack();
 	Defend();
-	//CheckGround();
+	CheckGround();
 }
 
 void Player::setKeyboard(bool left, bool right, bool J, bool Space1, bool Space2, bool K)
@@ -82,10 +82,13 @@ void Player::setKeyboard(bool left, bool right, bool J, bool Space1, bool Space2
 	{
 		return;
 	}
-	if (current != attack1 && current != attack2 && current != jump && current != fall && current != slide)
+	if (IsGround && !IsSliding && canInput)
 	{
 		current = idle2;
-		Move(left, right);
+	}
+	if (current != attack1 && current != attack2 && current != jump && !IsSliding && IsGround)
+	{
+		Run(left, right);
 	}
 	//Temp
 	if (current != slide && Space1 && b1)
@@ -97,7 +100,7 @@ void Player::setKeyboard(bool left, bool right, bool J, bool Space1, bool Space2
 	{
 		b1 = true;
 	}
-	if (IsGround == true && J)
+	if (IsGround && J)
 	{
 		Attack();
 	}
@@ -132,7 +135,7 @@ int Player::getHp() const
 	return Hp;
 }
 
-void Player::Move(bool left, bool right)
+void Player::Run(bool left, bool right)
 {
 	if (left)
 	{
@@ -153,7 +156,7 @@ Uint32 Player::jump1Callback(Uint32 interval, void* param)
 	it->PlayerCollision.y -= 4;
 	if (it->IsHit)
 	{
-		it->myTimerID = SDL_AddTimer(100, Player::fallCallback, param);
+		it->IsJump = false;
 		return 0;
 	}
 	if (it->PlayerCollision.y <= 400)
@@ -163,48 +166,7 @@ Uint32 Player::jump1Callback(Uint32 interval, void* param)
 	}
 	if (it->human_index == 7)
 	{
-		it->myTimerID = SDL_AddTimer(100, Player::fallCallback, param);
-		return 0;
-	}
-	else
-	{
-		return 16;
-	}
-}
-
-Uint32 Player::fallCallback(Uint32 interval, void* param)
-{
-	Player* it{ static_cast<Player*>(param) };
-	it->current = it->fall;
-	it->player2_img_rect.y += 5;
-	it->PlayerCollision.y += 5;
-	std::vector<SDL_Rect> c{ it->m_scenes->getGroundCollision() };
-	if (it->PlayerCollision.y >= 400)
-	{
-		it->player2_img_rect.y += 1;
-		it->PlayerCollision.y += 1;
-	}
-	if (it->PlayerCollision.y > 536)
-	{
-		it->current = it->idle2;
-		it->IsGround = true;
-		it->JumpCount = 0;
-		return 0;
-	}
-	else if (it->isInPillar(c[1]))
-	{
-		it->current = it->idle2;
-		it->IsGround = true;
-		it->JumpCount = 0;
-		it->myTimerID = SDL_AddTimer(100, Player::InPillarCallback, param);
-		return 0;
-	}
-	else if (it->isInPillar(c[2]))
-	{
-		it->current = it->idle2;
-		it->IsGround = true;
-		it->JumpCount = 0;
-		it->myTimerID = SDL_AddTimer(100, Player::InPillarCallback, param);
+		it->IsJump = false;
 		return 0;
 	}
 	else
@@ -220,7 +182,8 @@ Uint32 Player::jump2Callback(Uint32 interval, void* param)
 	it->PlayerCollision.y -= 4;
 	if (it->IsHit)
 	{
-		it->myTimerID = SDL_AddTimer(100, Player::fallCallback, param);
+		//it->myTimerID = SDL_AddTimer(100, Player::fallCallback, param);
+		it->IsJump = false;
 		return 0;
 	}
 	if (it->PlayerCollision.y <= 400)
@@ -230,26 +193,14 @@ Uint32 Player::jump2Callback(Uint32 interval, void* param)
 	}
 	if (it->human_index == 7)
 	{
-		SDL_AddTimer(100, Player::fallCallback, param);
+		//SDL_AddTimer(100, Player::fallCallback, param);
+		it->IsJump = false;
 		return 0;
 	}
 	else
 	{
 		return 16;
 	}
-}
-
-Uint32 Player::InPillarCallback(Uint32 interval, void* param)
-{
-	Player* it{ static_cast<Player*>(param) };
-	std::vector<SDL_Rect> c{ it->m_scenes->getGroundCollision() };
-	if (!it->isInPillar(c[1]) && !it->isInPillar(c[2]))
-	{
-		SDL_AddTimer(100, Player::fallCallback, param);
-		it->IsGround = false;
-		return 0;
-	}
-	return 16;
 }
 
 Uint32 Player::Attack1Callback(Uint32 interval, void* param)
@@ -278,15 +229,6 @@ Uint32 Player::Attack2Callback(Uint32 interval, void* param)
 		return 0;
 	}
 	return 16;
-}
-
-void Player::CheckGround()
-{
-	if (player2_img_rect.y >= 515)
-	{
-		IsGround = true;
-		IsJump = !IsGround;
-	}
 }
 
 void Player::Jump()
@@ -532,4 +474,47 @@ void Player::Defend()
 		IsDisplay = true;
 		IsRender = true;
 	}
+}
+
+void Player::CheckGround()
+{
+	if (IsJump != false)
+	{
+		return;
+	}
+	std::vector c{ m_scenes->getGroundCollision() };
+	SDL_Rect player_bottom{ PlayerCollision.x,PlayerCollision.y + PlayerCollision.h - 1 ,PlayerCollision.w,5 };
+	for (const auto& it : c)
+	{
+		if (SDL_HasIntersection(&it, &player_bottom))
+		{
+			IsGround = true;
+			JumpCount = 0;
+			FallTime = 0;
+			player2_img_rect.y = it.y - 110;
+			PlayerCollision.y = player2_img_rect.y + 21;
+			return;
+		}
+	}
+	if (FallTime == 0)
+	{
+		FallTime += SDL_GetTicks();
+		current = fall;
+		player2_img_rect.y += 5;
+		PlayerCollision.y += 5;
+		IsGround = false;
+		return;
+	}
+	if (FallTime + 200 < SDL_GetTicks())
+	{
+		player2_img_rect.y += 1;
+		PlayerCollision.y += 1;
+	}
+	if (FallTime + 400 < SDL_GetTicks())
+	{
+		player2_img_rect.y += 2;
+		PlayerCollision.y += 2;
+	}
+	player2_img_rect.y += 5;
+	PlayerCollision.y += 5;
 }

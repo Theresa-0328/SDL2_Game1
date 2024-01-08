@@ -68,8 +68,6 @@ private:
 	bool b1{ true };
 	Uint32 static jump1Callback(Uint32 interval, void* param);
 	Uint32 static jump2Callback(Uint32 interval, void* param);
-	Uint32 static fallCallback(Uint32 interval, void* param);
-	Uint32 static InPillarCallback(Uint32 interval, void* param);
 	Uint32 static Attack1Callback(Uint32 interval, void* param);
 	Uint32 static Attack2Callback(Uint32 interval, void* param);
 	Uint32 static SlidCallback(Uint32 interval, void* param);
@@ -103,11 +101,12 @@ private:
 	uint32_t DefendTime{ 2500 };//无敌时间
 	uint32_t FlashTep{};//闪烁计时器
 	uint32_t FlashingTime{ 300 };//闪烁间隔
+	uint32_t FallTime{ 300 };//下落时间
 
 	std::function<void(int)> movefunction{};
 
 	void CheckGround();
-	void Move(bool left, bool right);
+	void Run(bool left, bool right);
 	void Jump();
 	void Attack();
 	bool isInPillar(SDL_Rect rect1);
@@ -116,4 +115,5 @@ private:
 	void checkAttackHit();
 	void StartSliding();
 	void Defend();//无敌状态
+	void CheckGround();
 };
