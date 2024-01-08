@@ -105,7 +105,6 @@ private:
 
 	std::function<void(int)> movefunction{};
 
-	void CheckGround();
 	void Run(bool left, bool right);
 	void Jump();
 	void Attack();
