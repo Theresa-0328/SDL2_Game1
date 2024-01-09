@@ -59,8 +59,6 @@ void Audio::LoadAudio()
 	Mix_VolumeChunk(Sound["Fire"], 10);
 	Sound["Fire1"] = Mix_LoadWAV("assets/Audio/Fire1.mp3");
 	Mix_VolumeChunk(Sound["Fire1"], 10);
-
-	Mix_PlayChannelTimed(-1, Sound["Fire1"], 0, -1);
 }
 
 void Audio::PlayGameBgm(const std::string_view name)
