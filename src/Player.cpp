@@ -142,11 +142,17 @@ void Player::Run(bool left, bool right)
 	{
 		current = run;
 		human_flip = SDL_FLIP_HORIZONTAL;
+		//m_audio->PlayGameSound("Run");
 	}
 	else if (right)
 	{
 		current = run;
 		human_flip = SDL_FLIP_NONE;
+		//m_audio->PlayGameSound("Run");
+	}
+	else
+	{
+		//m_audio->StopGameSound("Run");
 	}
 }
 
@@ -281,6 +287,7 @@ void Player::Attack()
 		current = attack1;
 		human_index = 0;
 		HitBoss = false;
+		m_audio->PlayGameSound("Attack");
 		SDL_AddTimer(16, Player::Attack1Callback, this);
 	}
 	if (ComboCount == 2)
@@ -288,6 +295,7 @@ void Player::Attack()
 		current = attack2;
 		human_index = 0;
 		HitBoss = false;
+		m_audio->PlayGameSound("Attack");
 		SDL_AddTimer(16, Player::Attack2Callback, this);
 	}
 }
@@ -332,7 +340,7 @@ void Player::checkAttackHit()
 	HitBoss = true;
 	if (AttackMode == 1)
 	{
-		m_boss->setHp(-10);
+		m_boss->setHp(-5);
 		m_ui->setBossHpValue(m_boss->getHp());
 		m_audio->PlayGameSound("Hit");
 	}
@@ -437,6 +445,7 @@ void Player::BeHit()
 				m_boss->leftShiftskill(i);
 			};
 	}
+	m_audio->PlayGameSound("PlayerHit");
 	SDL_AddTimer(16, Player::RepelCallback, this);
 	SDL_AddTimer(800, Player::BeHitCallback, this);
 }

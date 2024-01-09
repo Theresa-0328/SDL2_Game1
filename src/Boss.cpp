@@ -263,12 +263,11 @@ void Boss::rightShiftskill(int offset)
 
 void Boss::UpdateBossHp()
 {
-	if (Hp <= 0)
+	if (!isDead && Hp <= 0)
 	{
 		isDead = true;
 		Hp = 0;
 	}
-
 }
 
 void Boss::BeHit(int Damge)

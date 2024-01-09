@@ -13,7 +13,8 @@ FirePillar::FirePillar(SDL_Renderer* render) :
 	FirePillar_explosion_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Pillar/explosion-4.png"), TextureDeleter),
 	FirePillar_move_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Pillar/fire-ball.png"), TextureDeleter),
 	m_player(nullptr),
-	m_ui(nullptr)
+	m_ui(nullptr),
+	m_audio(nullptr)
 {
 }
 
@@ -21,11 +22,12 @@ FirePillar::~FirePillar()
 {
 }
 
-void FirePillar::Init(Boss* boss, Player* player, UI* ui)
+void FirePillar::Init(Boss* boss, Player* player, UI* ui, Audio* audio)
 {
 	m_boss = boss;
 	m_player = player;
 	m_ui = ui;
+	m_audio = audio;
 }
 
 void FirePillar::Start()
@@ -133,6 +135,7 @@ void FirePillar::Move()
 		}
 		if (Fp->state == FirePillar::FirePillarState::State::explosion && Fp->lifeTime <= SDL_GetTicks())
 		{
+			m_audio->PlayGameSound("Fire1");
 			Fp->state = FirePillar::FirePillarState::State::pillar;
 			Fp->index = 0;
 			Fp->Location.x += 40;
@@ -185,6 +188,7 @@ void FirePillar::addFirePillar(int num)
 		SDL_Rect Location{ 100 * numbers[i] ,0,0,0 };
 		FBSGroup.push_back(new FirePillarState(Location, FirePillar::FirePillarState::State::move));
 	}
+	m_audio->PlayGameSound("Fire");
 }
 
 void FirePillar::setKeyboard(bool left, bool right)

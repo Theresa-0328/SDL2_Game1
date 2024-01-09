@@ -40,14 +40,16 @@ private:
 	uint32_t gFPS{ 60 };
 	uint32_t gFPS_TIME{ 1000 / gFPS };
 	SDL_Event event{};
-	Audio audio{};
+	//Audio audio{};
 
 	std::unique_ptr<Scenes> m_scenes;
 	std::unique_ptr<Player> m_player;
 	std::unique_ptr<Boss> m_boss;
 	std::unique_ptr<FireBall> m_fireball;
 	std::unique_ptr<FirePillar> m_firepillar;
+
 	std::shared_ptr<UI> m_ui;
+	std::shared_ptr<Audio> m_audio;
 
 	bool k_left{};
 	bool k_right{};

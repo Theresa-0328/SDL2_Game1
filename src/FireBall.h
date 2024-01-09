@@ -4,6 +4,7 @@
 #include <array>
 #include <iostream>
 
+#include "Audio.h"
 #include "Ui.h"
 #include "Global.hpp"
 #include "Scenes.h"
@@ -17,7 +18,7 @@ class FireBall :
 public:
 	FireBall(SDL_Renderer* render);
 	~FireBall();
-	void Init(Scenes* s, UI* ui, Boss* boss, Player* player);
+	void Init(Scenes* s, UI* ui, Boss* boss, Player* player, Audio* audio);
 	void Render();
 	void Update();
 	void Start();
@@ -30,6 +31,7 @@ private:
 	Boss* m_boss;
 	Scenes* m_scenes;
 	UI* m_ui;
+	Audio* m_audio;
 
 	int index = 0;
 	int maxDuration = 150;

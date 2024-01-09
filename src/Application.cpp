@@ -10,7 +10,8 @@ Application::Application() :
 	renderH(0),
 	quit(false),
 	m_scenes(nullptr),
-	m_ui(nullptr)
+	m_ui(nullptr),
+	m_audio(nullptr)
 {
 	int ret = SDL_Init(SDL_INIT_VIDEO);
 	ret = IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG);
@@ -27,6 +28,7 @@ Application::Application() :
 	m_fireball = std::make_unique<FireBall>(m_render);
 	m_firepillar = std::make_unique<FirePillar>(m_render);
 	m_ui = std::make_shared<UI>(m_render);
+	m_audio = std::make_shared<Audio>();
 }
 
 Application::~Application()
@@ -154,13 +156,14 @@ bool Application::ProcessMessage()
 
 void Application::init()
 {
-	audio.Init();
-	audio.LoadAudio();
-	audio.PlayGameBgm("Boss2");
+	m_audio->Init();
+	m_audio->LoadAudio();
+	m_audio->PlayGameBgm("Boss2");
+
 	m_boss->Init(m_ui.get(), m_player.get(), m_fireball.get(), m_firepillar.get());
-	m_player->Init(m_ui.get(), m_scenes.get(), m_boss.get(), &audio);
-	m_fireball->Init(m_scenes.get(), m_ui.get(), m_boss.get(), m_player.get());
-	m_firepillar->Init(m_boss.get(), m_player.get(), m_ui.get());
+	m_player->Init(m_ui.get(), m_scenes.get(), m_boss.get(), m_audio.get());
+	m_fireball->Init(m_scenes.get(), m_ui.get(), m_boss.get(), m_player.get(), m_audio.get());
+	m_firepillar->Init(m_boss.get(), m_player.get(), m_ui.get(), m_audio.get());
 }
 
 void Application::update()

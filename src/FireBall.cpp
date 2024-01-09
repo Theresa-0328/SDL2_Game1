@@ -25,7 +25,8 @@ FireBall::FireBall(SDL_Renderer* render) :
 	m_render(render),
 	FireBall_move_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Ball/Move.png"), TextureDeleter),
 	Explosion_img(IMG_LoadTexture(m_render, "assets/Boss/Fire Ball/Explosion.png"), TextureDeleter),
-	m_ui(nullptr)
+	m_ui(nullptr),
+	m_audio(nullptr)
 {
 }
 
@@ -34,12 +35,13 @@ FireBall::~FireBall()
 
 }
 
-void FireBall::Init(Scenes* s, UI* ui, Boss* boss, Player* player)
+void FireBall::Init(Scenes* s, UI* ui, Boss* boss, Player* player, Audio* audio)
 {
 	m_boss = boss;
 	m_player = player;
 	m_ui = ui;
 	m_scenes = s;
+	m_audio = audio;
 }
 
 void FireBall::Render()
@@ -101,16 +103,19 @@ void FireBall::Update()
 	}
 	if (LifeTime <= SDL_GetTicks() - FireBallWaitTime + FireBallAttackTime * 5 && waves == 0)
 	{
+		m_audio->PlayGameSound("Fire");
 		addFireBall();
 		waves = 1;
 	}
 	if (LifeTime <= SDL_GetTicks() - FireBallWaitTime + FireBallAttackTime * 4 && waves == 1)
 	{
+		m_audio->PlayGameSound("Fire");
 		addFireBall();
 		waves = 2;
 	}
 	if (LifeTime <= SDL_GetTicks() - FireBallWaitTime + FireBallAttackTime * 3 && waves == 2)
 	{
+		m_audio->PlayGameSound("Fire");
 		addFireBall();
 		waves = 3;
 	}

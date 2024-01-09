@@ -49,6 +49,18 @@ void Audio::LoadAudio()
 	Bgm["Boss2"] = Mix_LoadMUS("assets/Audio/Boss2.mp3");
 	Sound["Hit"] = Mix_LoadWAV("assets/Audio/Hit.mp3");
 	Mix_VolumeChunk(Sound["Hit"], 10);
+	Sound["Attack"] = Mix_LoadWAV("assets/Audio/Attack.mp3");
+	Mix_VolumeChunk(Sound["Attack"], 10);
+	Sound["Run"] = Mix_LoadWAV("assets/Audio/Run.mp3");
+	Mix_VolumeChunk(Sound["Run"], 1);
+	Sound["PlayerHit"] = Mix_LoadWAV("assets/Audio/301838Preview.mp3");
+	Mix_VolumeChunk(Sound["PlayerHit"], 10);
+	Sound["Fire"] = Mix_LoadWAV("assets/Audio/Fire.mp3");
+	Mix_VolumeChunk(Sound["Fire"], 10);
+	Sound["Fire1"] = Mix_LoadWAV("assets/Audio/Fire1.mp3");
+	Mix_VolumeChunk(Sound["Fire1"], 10);
+
+	Mix_PlayChannelTimed(-1, Sound["Fire1"], 0, -1);
 }
 
 void Audio::PlayGameBgm(const std::string_view name)
@@ -58,5 +70,10 @@ void Audio::PlayGameBgm(const std::string_view name)
 
 void Audio::PlayGameSound(const std::string_view name)
 {
-	Mix_PlayChannel(-1, Sound[name], 0);
+	StopSound[name.data()] = Mix_PlayChannelTimed(-1, Sound[name], 0, -1);
+}
+
+void Audio::StopGameSound(const std::string& name)
+{
+	Mix_HaltChannel(StopSound[name]);
 }

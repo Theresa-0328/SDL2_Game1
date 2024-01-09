@@ -4,6 +4,7 @@
 #include <array>
 #include <iostream>
 
+#include "Audio.h"
 #include "Scenes.h"
 #include "Deleter.hpp"
 #include "Ui.h"
@@ -17,7 +18,7 @@ class FirePillar :
 public:
 	FirePillar(SDL_Renderer* render);
 	~FirePillar();
-	void Init(Boss* boss, Player* player, UI* ui);
+	void Init(Boss* boss, Player* player, UI* ui, Audio* audio);
 	void Start();
 	void Render();
 	void Update();
@@ -29,6 +30,8 @@ private:
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
 	Player* m_player;
 	UI* m_ui;
+	Audio* m_audio;
+
 	int LifeTime{};
 
 	std::shared_ptr<SDL_Texture> FirePillar_move_img;
